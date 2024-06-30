@@ -16,12 +16,6 @@ class Migration_Create_menus extends CI_Migration {
             FOREIGN KEY (`parent_id`) REFERENCES `menus` (`menu_id`)
         ) DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci";
         $this->db->query($sql);
-
-        // Insert master menu and sub-menus
-        $this->db->insert('menus', ['menu_name' => 'Master', 'menu_url' => '#', 'menu_icon' => 'fas fa-cogs', 'parent_id' => null]);
-        $master_menu_id = $this->db->insert_id();
-        $this->db->insert('menus', ['menu_name' => 'Products', 'menu_url' => 'products', 'menu_icon' => 'fas fa-box', 'parent_id' => $master_menu_id]);
-        $this->db->insert('menus', ['menu_name' => 'Categories', 'menu_url' => 'categories', 'menu_icon' => 'fas fa-list', 'parent_id' => $master_menu_id]);
     }
 
     public function down() {

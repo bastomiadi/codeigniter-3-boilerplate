@@ -9,7 +9,7 @@ class Category extends CI_Controller {
 
         // Check if user is logged in and has 'member' role
         if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
-            redirect('auth/login'); // Redirect unauthorized users to login page
+            redirect('backend/auth/login'); // Redirect unauthorized users to login page
         }
     }
 

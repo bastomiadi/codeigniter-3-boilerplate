@@ -10,32 +10,36 @@ class Seed extends CI_Controller {
     }
 
     public function index(){
-        // $this->categories();
-        // $this->products();
-        // $this->users();
+        $this->menus_seeders();
+        $this->permissions_seeders();
         $this->users_seeders();
         $this->categories_seeders();
         $this->products_seeders();
-        $this->role_permissions_seeder();
+        // $this->role_permissions_seeder();
     }
 
-    // public function categories() {
-    //     $this->load->controller('seeders/Categories_seeder');
-    //     $seeder = new Categories_seeder();
-    //     $seeder->index();
-    // }
+    public function menus_seeders(){
+        // Insert master menu and sub-menus
+        $this->db->insert('menus', ['menu_name' => 'Master', 'menu_url' => '#', 'menu_icon' => 'fas fa-cogs', 'parent_id' => null]);
+        $master_menu_id = $this->db->insert_id();
+        $this->db->insert('menus', ['menu_name' => 'Products', 'menu_url' => 'backend/products', 'menu_icon' => 'fas fa-box', 'parent_id' => $master_menu_id]);
+        $this->db->insert('menus', ['menu_name' => 'Categories', 'menu_url' => 'backend/category', 'menu_icon' => 'fas fa-list', 'parent_id' => $master_menu_id]);
 
-    // public function products() {
-    //     $this->load->controller('seeders/Products_seeder');
-    //     $seeder = new Products_seeder();
-    //     $seeder->index();
-    // }
+        echo "Menus seeding completed.";
+    }
 
-    // public function users() {
-    //     $this->load->controller('seeders/Users_seeder');
-    //     $seeder = new Users_seeder();
-    //     $seeder->index();
-    // }
+    public function permissions_seeders(){
+         // Insert default permissions
+         $permissions_data = array(
+            array('permission_name' => 'create'),
+            array('permission_name' => 'read'),
+            array('permission_name' => 'update'),
+            array('permission_name' => 'delete')
+        );
+        $this->db->insert_batch('permissions', $permissions_data);
+
+        echo "Permissions seeding completed.";
+    }
 
     public function users_seeders(){
         $faker = Faker\Factory::create();
@@ -103,7 +107,7 @@ class Seed extends CI_Controller {
         );
 
         // Insert role permissions
-        $this->db->insert_batch('role_permissions', $role_permissions);
+        $this->db->insert_batch('roles_permissions', $role_permissions);
 
         echo "Role permissions seeded successfully.";
     }
