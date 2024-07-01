@@ -1,19 +1,55 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
+
 # RewriteEngine On
 # RewriteCond %{REQUEST_FILENAME} !-f
 # RewriteCond %{REQUEST_FILENAME} !-d
 # RewriteRule ^(.*)$ index.php/$1 [L]
 
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /ci3-boilerplate/
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteBase /ci3-boilerplate/
 
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php/$1 [L]
-</IfModule>
+#     RewriteCond %{REQUEST_FILENAME} !-f
+#     RewriteCond %{REQUEST_FILENAME} !-d
+#     RewriteRule ^(.*)$ index.php/$1 [L]
+# </IfModule>
 
 #RewriteEngine on
 #RewriteCond $1 !^(index\.php|public|\.txt)
 #RewriteCond %{REQUEST_FILENAME} !-f
 #RewriteCond %{REQUEST_FILENAME} !-d
 #RewriteRule ^(.*)$ index.php?$1
+
+
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+
+#     # Redirect Trailing Slashes If Not A Folder...
+#     RewriteCond %{REQUEST_FILENAME} !-d
+#     RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+#     # Remove index.php from URL
+#     RewriteCond %{REQUEST_URI} ^/index\.php
+#     RewriteRule ^index\.php/(.*)$ /$1 [R=301,NE,L]
+
+#     # Handle Front Controller...
+#     RewriteCond %{REQUEST_FILENAME} !-f
+#     RewriteCond %{REQUEST_FILENAME} !-d
+#     RewriteRule ^(.*)$ index.php/$1 [L]
+# </IfModule>
+
+# <IfModule !mod_rewrite.c>
+#     # If we don't have mod_rewrite installed, all 404's
+#     # can be sent to index.php, and everything works as normal.
+#     # Submitted by: ElliotHaughin
+
+#     ErrorDocument 404 /index.php
+# </IfModule>
+
+# RewriteEngine On
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^(.*)$ /ci3-boilerplate/index.php/$1 [L]

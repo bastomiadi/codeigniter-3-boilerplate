@@ -18,14 +18,6 @@ class Migration_Create_roles extends CI_Migration {
         ));
         $this->dbforge->add_key('role_id', TRUE);
         $this->dbforge->create_table('roles');
-
-        // Insert default roles
-        $roles_data = array(
-            array('role_name' => 'superadmin'),
-            array('role_name' => 'admin'),
-            array('role_name' => 'member')
-        );
-        $this->db->insert_batch('roles', $roles_data);
     }
 
     public function down() {

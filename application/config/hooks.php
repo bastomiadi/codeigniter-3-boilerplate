@@ -28,5 +28,3 @@ $hook['post_controller_constructor'] = array(
     'filename' => 'MenusHook.php',
     'filepath' => 'hooks',
 );
-
-

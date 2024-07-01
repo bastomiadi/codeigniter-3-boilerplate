@@ -5,64 +5,56 @@ class Users extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('user_model');
-        
-        // Check if user is logged in and has 'superadmin' role
-        if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
-            redirect('backend/auth/login'); // Redirect unauthorized users to login page
-        }
+        $this->load->model('User_model');
     }
 
     public function index() {
-        // Load list of users
-        $data['users'] = $this->user_model->get_users();
-        $this->load->view('backend/users/index', $data); // Adjust view path as per your structure
+        $data['title'] = 'Users';
+        $data['page_title'] = 'Users';
+        $data['contents'] = $this->load->view('backend/users/index', '', TRUE);
+        $this->load->view('backend/layouts/main', $data);
+
+        // $this->load->view('backend/users/index');
     }
 
-    public function add_user() {
-        // Handle user addition form submission
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $username = $this->input->post('username');
-            $email = $this->input->post('email');
-            $password = $this->input->post('password');
-            $role_id = $this->input->post('role_id'); // Assuming role_id is posted from form
+    public function fetch_users() {
+        $users = $this->User_model->get_all_users();
+        echo json_encode($users);
+    }
 
-            // Add user
-            $this->user_model->add_user($username, $email, $password, $role_id);
+    public function store() {
+        $data = array(
+            'username' => $this->input->post('username'),
+            'email' => $this->input->post('email'),
+            'password' => password_hash($this->input->post('password'), PASSWORD_BCRYPT),
+            'role_id' => $this->input->post('role_id')
+        );
 
-            // Optionally, redirect or handle success
-            redirect('users'); // Redirect to user list after adding user
+        $insert = $this->User_model->insert_user($data);
+        echo json_encode(array("status" => $insert));
+    }
+
+    public function edit($id) {
+        $user = $this->User_model->get_user_by_id($id);
+        echo json_encode($user);
+    }
+
+    public function update() {
+        $data = array(
+            'username' => $this->input->post('username'),
+            'email' => $this->input->post('email'),
+            'role_id' => $this->input->post('role_id')
+        );
+        if ($this->input->post('password')) {
+            $data['password'] = password_hash($this->input->post('password'), PASSWORD_BCRYPT);
         }
 
-        // Load add user view
-        $this->load->view('backend/users/add'); // Adjust view path as per your structure
+        $update = $this->User_model->update_user($this->input->post('id'), $data);
+        echo json_encode(array("status" => $update));
     }
 
-    public function edit_user($user_id) {
-        // Handle user edit form submission
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $username = $this->input->post('username');
-            $email = $this->input->post('email');
-            $password = $this->input->post('password');
-            $role_id = $this->input->post('role_id'); // Assuming role_id is posted from form
-
-            // Edit user
-            $this->user_model->edit_user($user_id, $username, $email, $password, $role_id);
-
-            // Optionally, redirect or handle success
-            redirect('users'); // Redirect to user list after editing user
-        }
-
-        // Load edit user view with user details
-        $data['user'] = $this->user_model->get_user($user_id);
-        $this->load->view('backend/users/edit', $data); // Adjust view path as per your structure
-    }
-
-    public function delete_user($user_id) {
-        // Delete user
-        $this->user_model->delete_user($user_id);
-
-        // Optionally, redirect or handle success
-        redirect('users'); // Redirect to user list after deleting user
+    public function delete($id) {
+        $delete = $this->User_model->delete_user($id);
+        echo json_encode(array("status" => $delete));
     }
 }

@@ -7,9 +7,9 @@ class Dashboard extends CI_Controller {
         parent::__construct();
         //$this->load->model('Menu_model');
         // Check if user is logged in and has 'member' role
-        if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
-            redirect('backend/auth/login'); // Redirect unauthorized users to login page
-        }
+        // if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
+        //     redirect('backend/auth/login'); // Redirect unauthorized users to login page
+        // }
     }
 
     public function index()

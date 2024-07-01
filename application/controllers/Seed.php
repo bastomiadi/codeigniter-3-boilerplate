@@ -11,19 +11,43 @@ class Seed extends CI_Controller {
 
     public function index(){
         $this->menus_seeders();
+        $this->roles_seeders();
         $this->permissions_seeders();
         $this->users_seeders();
+        $this->profiles_seeders();
         $this->categories_seeders();
         $this->products_seeders();
         // $this->role_permissions_seeder();
+    }
+
+    public function roles_seeders(){
+        // Insert default roles
+        $roles_data = array(
+            array('role_name' => 'superadmin'),
+            array('role_name' => 'admin'),
+            array('role_name' => 'member')
+        );
+        $this->db->insert_batch('roles', $roles_data);
+
+        echo "Roles seeding completed.";
     }
 
     public function menus_seeders(){
         // Insert master menu and sub-menus
         $this->db->insert('menus', ['menu_name' => 'Master', 'menu_url' => '#', 'menu_icon' => 'fas fa-cogs', 'parent_id' => null]);
         $master_menu_id = $this->db->insert_id();
-        $this->db->insert('menus', ['menu_name' => 'Products', 'menu_url' => 'backend/products', 'menu_icon' => 'fas fa-box', 'parent_id' => $master_menu_id]);
+        $this->db->insert('menus', ['menu_name' => 'Products', 'menu_url' => 'backend/product', 'menu_icon' => 'fas fa-box', 'parent_id' => $master_menu_id]);
         $this->db->insert('menus', ['menu_name' => 'Categories', 'menu_url' => 'backend/category', 'menu_icon' => 'fas fa-list', 'parent_id' => $master_menu_id]);
+        $this->db->insert('menus', ['menu_name' => 'Menus', 'menu_url' => 'backend/menus', 'menu_icon' => 'fas fa-list', 'parent_id' => $master_menu_id]);
+        $this->db->insert('menus', ['menu_name' => 'Dashboard', 'menu_url' => 'backend/dashboard', 'menu_icon' => 'fas fa-list', 'parent_id' => null]);
+
+        $this->db->insert('menus', ['menu_name' => 'RBAC', 'menu_url' => '#', 'menu_icon' => 'fas fa-list', 'parent_id' => null]);
+        $rbac = $this->db->insert_id();
+        $this->db->insert('menus', ['menu_name' => 'Users', 'menu_url' => 'backend/users', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac]);
+        $this->db->insert('menus', ['menu_name' => 'Roles', 'menu_url' => 'backend/roles', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac]);
+        $this->db->insert('menus', ['menu_name' => 'Permissions', 'menu_url' => 'backend/permissions', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac]);
+        $this->db->insert('menus', ['menu_name' => 'Roles Permissions', 'menu_url' => 'backend/roles', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac]);
+
 
         echo "Menus seeding completed.";
     }
@@ -56,6 +80,24 @@ class Seed extends CI_Controller {
         }
 
         echo "Users seeding completed.";
+    }
+
+    public function profiles_seeders(){
+        $faker = Faker\Factory::create();
+
+        for ($i = 1; $i <= 5; $i++) {
+            $data = array(
+                'user_id' => $i,
+                'first_name' => $faker->username,
+                'last_name' => $faker->username,
+                'address' => $faker->word,
+                'phone' => $faker->phoneNumber,
+            );
+
+            $this->db->insert('profile', $data);
+        }
+
+        echo "Profiles seeding completed.";
     }
 
     public function categories_seeders() {

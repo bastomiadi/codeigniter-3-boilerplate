@@ -7,9 +7,41 @@ class Category extends CI_Controller {
         parent::__construct();
         $this->load->model('Category_model');
 
-        // Check if user is logged in and has 'member' role
-        if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
-            redirect('backend/auth/login'); // Redirect unauthorized users to login page
+        // // Check if user is logged in and has 'member' role
+        // if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
+        //     redirect('backend/auth/login'); // Redirect unauthorized users to login page
+        // }
+        $this->check_auth();
+    }
+
+    protected function check_auth() {
+
+        // echo '<pre>';
+        // print_r($this->session->userdata('logged_in'));
+        // echo '</pre>';
+        // die;
+
+        // Check if user is logged in
+        if (!$this->session->userdata('logged_in')) {
+            redirect('backend/auth/login');
+        }
+
+        // Check if user has required role
+        $role_id = $this->session->userdata('role_id');
+        $controller = $this->router->fetch_class();
+
+        // Define role-based access
+        $access = array(
+            'member' => array('category', 'product'), // Member can access category and product
+            'admin' => array('dashboard', 'category', 'product', 'user'), // Add other controllers for admin
+            'superadmin' => array('dashboard', 'category', 'product', 'user', 'settings') // Add other controllers for superadmin
+        );
+
+        $role_name = ($role_id == 1) ? 'superadmin' : (($role_id == 2) ? 'admin' : 'member');
+
+        // Check if current controller is in allowed controllers for the role
+        if (!in_array($controller, $access[$role_name])) {
+            redirect('backend/auth/permission_denied'); // Redirect to permission denied page
         }
     }
 
