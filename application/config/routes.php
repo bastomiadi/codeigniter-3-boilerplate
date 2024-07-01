@@ -51,23 +51,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 // Load frontend routes
-if (file_exists(APPPATH . 'config/routes_frontend.php')) {
-    include(APPPATH . 'config/routes/routes_frontend.php');
-}
+include(APPPATH . 'config/routes/routes_frontend.php');
 
 // Load backend routes
-if (file_exists(APPPATH . 'config/routes_backend.php')) {
-    include(APPPATH . 'config/routes/routes_backend.php');
-}
+include(APPPATH . 'config/routes/routes_backend.php');
 
 // Load API routes
-if (file_exists(APPPATH . 'config/routes_api.php')) {
-    include(APPPATH . 'config/routes/routes_api.php');
-}
+include(APPPATH . 'config/routes/routes_api.php');
 
 // $route['default_controller'] = 'welcome';
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
 
 
