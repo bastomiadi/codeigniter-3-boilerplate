@@ -8,16 +8,15 @@ class Menus extends CI_Controller {
         $this->load->model('Menu_model');
 
         // Check if user is logged in and has 'superadmin' role
-        if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
-            redirect('backend/auth/login'); // Redirect unauthorized users to login page
-        }
+        // if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
+        //     redirect('backend/auth/login'); // Redirect unauthorized users to login page
+        // }
     }
 
     public function index() {
         $data['title'] = 'Menus';
         $data['page_title'] = 'Menus';
         $data['contents'] = $this->load->view('backend/menus/index', '', TRUE);
-        $data['menus'] = $this->Menu_model->get_menu_tree();
         $this->load->view('backend/layouts/main', $data);
         //$this->load->view('backend/menus/index');
     }

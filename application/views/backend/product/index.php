@@ -80,6 +80,7 @@ $(document).ready(function() {
     load_products();
 
     $('#category_id').select2({
+        width: '100%',
         placeholder: 'Select a category',
         ajax: {
             url: '<?php echo site_url('backend/category/select2'); ?>',

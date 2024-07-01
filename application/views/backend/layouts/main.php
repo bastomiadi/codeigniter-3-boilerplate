@@ -42,7 +42,7 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <!-- Add this to your main header or a common CSS file -->
-<!-- <style>
+<style>
     .select2-container--default .select2-selection--single {
         height: 40px; /* Adjust this value to your desired height */
         padding: 8px 12px; /* Adjust padding for better appearance */
@@ -53,7 +53,10 @@
     .select2-container--default .select2-selection--single .select2-selection__arrow {
         height: 38px; /* Slightly less than the container height */
     }
-</style> -->
+    /* .select2 {
+        width: 100% !important;
+    } */
+</style>
 <div class="wrapper">
 
     <!-- Navbar -->
@@ -120,13 +123,13 @@
 
 <!-- Add more JS files as needed -->
 <script type="text/javascript">
-    $(document).ready(function() {
-        $.fn.select2.defaults.set("width", "100%");
+    // $(document).ready(function() {
+    //     // $.fn.select2.defaults.set("width", "100%");
         
-        $('.select2').select2({
-            width: '100%'
-        });
-    });
+    //     // $('.select2').select2({
+    //     //     width: '100%'
+    //     // });
+    // });
 </script>
 </body>
 </html>
