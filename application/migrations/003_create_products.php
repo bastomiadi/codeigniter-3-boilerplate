@@ -35,6 +35,26 @@ class Migration_Create_products extends CI_Migration {
                 'type' => 'DATETIME',
                 'null' => TRUE,
             ),
+            'deleted_at' => array(
+                'type' => 'DATETIME',
+                'null' => TRUE,
+            ),
+            'created_by' => array(
+                'type' => 'INT',
+                'null' => TRUE,
+            ),
+            'updated_by' => array(
+                'type' => 'INT',
+                'null' => TRUE,
+            ),
+            'deleted_by' => array(
+                'type' => 'INT',
+                'null' => TRUE,
+            ),
+            'restored_by' => array(
+                'type' => 'INT',
+                'null' => TRUE,
+            ),
         ));
 
         // Set primary key

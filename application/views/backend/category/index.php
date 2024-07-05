@@ -159,7 +159,7 @@ $(document).ready(function() {
 
     // Add Category Modal
     $('#addCategoryModal').on('shown.bs.modal', function () {
-        $('#categoryName').focus();
+        //$('#categoryName').focus();
     });
 
     // Edit Category Modal

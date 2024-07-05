@@ -21,27 +21,67 @@ class Roles extends CI_Controller {
         //$this->load->view('backend/roles/index');
     }
 
-    public function fetch_roles() {
-        $data = $this->role_model->get_all();
-        echo json_encode($data);
-    }
-
-    public function save() {
-        $data = array(
-            'role_name' => $this->input->post('role_name')
-        );
-
-        if ($this->input->post('role_id')) {
-            $this->role_model->update($this->input->post('role_id'), $data);
-            echo json_encode(array("status" => TRUE));
-        } else {
-            $this->role_model->insert($data);
-            echo json_encode(array("status" => TRUE));
+    public function get_roles() {
+        $fetch_data = $this->role_model->make_datatables();
+        $data = array();
+        foreach ($fetch_data as $row) {
+            $sub_array = array();
+            $sub_array['role_id'] = $row->role_id;
+            $sub_array['role_name'] = $row->role_name;
+            $sub_array['description'] = $row->description;
+            $sub_array['actions'] = '
+                <button type="button" class="btn btn-warning btn-sm edit-role" data-toggle="modal" data-target="#editRoleModal" data-id="'.$row->role_id.'" data-name="'.$row->role_name.'" data-description="'.$row->description.'">Edit</button>
+                <button type="button" class="btn btn-danger btn-sm delete-role" data-toggle="modal" data-target="#deleteRoleModal" data-id="'.$row->role_id.'">Delete</button>
+            ';
+            $data[] = $sub_array;
         }
+        $output = array(
+            "draw" => intval($this->input->post("draw")),
+            "recordsTotal" => $this->role_model->get_all_data(),
+            "recordsFiltered" => $this->role_model->get_filtered_data(),
+            "data" => $data
+        );
+        echo json_encode($output);
     }
 
-    public function delete($role_id) {
-        $this->role_model->delete($role_id);
-        echo json_encode(array("status" => TRUE));
+    public function add_role() {
+        $roleName = $this->input->post('roleName');
+        $roleDescription = $this->input->post('roleDescription');
+        $createdBy = $this->session->userdata('user_id'); // Assuming you store user_id in session
+
+        // Add category logic
+        $this->role_model->add_role($roleName, $roleDescription, $createdBy);
+        echo json_encode(['status' => 'success']);
+    }
+
+    public function edit_role() {
+        $categoryId = $this->input->post('id');
+        $roleName = $this->input->post('roleName');
+        $roleDescription = $this->input->post('roleDescription');
+        $updatedBy = $this->session->userdata('user_id'); // Assuming you store user_id in session
+
+        // Edit category logic
+        $this->role_model->edit_role($categoryId, $roleName, $roleDescription, $updatedBy);
+        echo json_encode(['status' => 'success']);
+    }
+
+    public function delete_role() {
+        $categoryId = $this->input->post('id');
+        $deletedBy = $this->session->userdata('user_id'); // Assuming you store user_id in session
+
+        // Soft delete category logic
+        $this->role_model->soft_delete_role($categoryId, $deletedBy);
+        echo json_encode(['status' => 'success']);
+    }
+
+    // dropdown get category for select2
+    public function select2() {
+        $searchTerm = $this->input->get('q');
+        $categories = $this->role_model->get_select2($searchTerm);
+        echo json_encode($categories);
+    }
+
+    public function get_all_roles() {
+        return $this->db->get('roles')->result();
     }
 }

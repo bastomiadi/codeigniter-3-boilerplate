@@ -1,9 +1,11 @@
 <?php
-class Role_model extends CI_Model {
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-    var $table = "roles";
-    var $select_column = array("role_id", "role_name", "description");
-    var $order_column = array("role_id", "role_name", null);
+class Roles_permissions_model extends CI_Model {
+
+    var $table = "roles_permissions";
+    var $select_column = array("role_id", "permission_id");
+    var $order_column = array("role_id", "permission_id", null);
     
     public function __construct() {
         parent::__construct();
@@ -18,14 +20,14 @@ class Role_model extends CI_Model {
         $this->db->insert($this->table, $data);
     }
     
-    public function edit_role($role_id, $role_name, $updated_by) {
-        $data = array(
-            'role_name' => $role_name,
-            'updated_by' => $updated_by,
-            'updated_at' => date('Y-m-d H:i:s')
-        );
-        $this->db->where('role_id', $role_id)->update($this->table, $data);
-    }
+    // public function edit_role($role_id, $role_name, $updated_by) {
+    //     $data = array(
+    //         'role_name' => $role_name,
+    //         'updated_by' => $updated_by,
+    //         'updated_at' => date('Y-m-d H:i:s')
+    //     );
+    //     $this->db->where('role_id', $role_id)->update($this->table, $data);
+    // }
     
     public function soft_delete_role($role_id, $deleted_by) {
         $data = array(
@@ -86,7 +88,38 @@ class Role_model extends CI_Model {
         return $query->result_array();
     }
 
-    public function get_all_roles() {
-        return $this->db->get('roles')->result();
+    //testing
+    public function get_all_role_permissions() {
+        $this->db->select('rp.*, r.role_name, p.permission_name');
+        $this->db->from('roles_permissions rp');
+        $this->db->join('roles r', 'rp.role_id = r.role_id');
+        $this->db->join('permissions p', 'rp.permission_id = p.permission_id');
+        return $this->db->get()->result();
     }
+
+    public function insert_role_permission($data) {
+        return $this->db->insert('roles_permissions', $data);
+    }
+
+    // public function update_role_permission($role_id, $permission_id, $data) {
+    //     $this->db->where('role_id', $role_id);
+    //     $this->db->where('permission_id', $permission_id);
+    
+    //     $result = $this->db->update('roles_permissions', $data);
+    
+    //     // Debugging information
+    //     if (!$result) {
+    //         log_message('error', 'Failed to update role_permission: ' . $this->db->last_query());
+    //         log_message('error', 'DB Error: ' . print_r($this->db->error(), true));
+    //     }
+    
+    //     return $result;
+    // }
+    
+    public function delete_role_permission($role_id, $permission_id) {
+        $this->db->where('role_id', $role_id);
+        $this->db->where('permission_id', $permission_id);
+        return $this->db->delete('roles_permissions');
+    }
+
 }

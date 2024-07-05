@@ -4,49 +4,49 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Category_model extends CI_Model {
 
     var $table = "categories";
-    var $select_column = array("id", "name");
-    var $order_column = array(null, "name", null);
+    var $select_column = array("id", "name", "description");
+    var $order_column = array("id", "name", null);
     
     public function __construct() {
         parent::__construct();
     }
 
-    public function get_categories() {
-        // Retrieve categories that are not soft-deleted
-        return $this->db->where('deleted_at', NULL)->get('categories')->result();
-    }
-
-    public function add_category($name) {
+    public function add_category($name, $created_by) {
         $data = array(
-            'name' => $name
+            'name' => $name,
+            'created_by' => $created_by,
+            'created_at' => date('Y-m-d H:i:s')
         );
-        $this->db->insert('categories', $data);
+        $this->db->insert($this->table, $data);
     }
-
-    public function edit_category($id, $name) {
+    
+    public function edit_category($id, $name, $updated_by) {
         $data = array(
-            'name' => $name
+            'name' => $name,
+            'updated_by' => $updated_by,
+            'updated_at' => date('Y-m-d H:i:s')
         );
-        $this->db->where('id', $id)->update('categories', $data);
+        $this->db->where('id', $id)->update($this->table, $data);
     }
-
-    public function soft_delete_category($id) {
+    
+    public function soft_delete_category($id, $deleted_by) {
         $data = array(
-            'deleted_at' => date('Y-m-d H:i:s')
+            'deleted_at' => date('Y-m-d H:i:s'),
+            'deleted_by' => $deleted_by
         );
-        $this->db->where('id', $id)->update('categories', $data);
+        $this->db->where('id', $id)->update($this->table, $data);
     }
 
     public function delete_category($id) {
-        $this->db->where('id', $id)->delete('categories');
+        $this->db->where('id', $id)->delete($this->table);
     }
 
     public function make_query() {
         $this->db->select($this->select_column);
         $this->db->from($this->table);
+        $this->db->where('deleted_at', NULL); // Exclude soft deleted records
         if (isset($_POST["search"]["value"])) {
             $this->db->like("name", $_POST["search"]["value"]);
-            // $this->db->or_like("description", $_POST["search"]["value"]);
         }
         if (isset($_POST["order"])) {
             $this->db->order_by($this->order_column[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
@@ -73,12 +73,14 @@ class Category_model extends CI_Model {
     public function get_all_data() {
         $this->db->select("*");
         $this->db->from($this->table);
+        $this->db->where('deleted_at', NULL); // Exclude soft deleted records
         return $this->db->count_all_results();
     }
 
     public function get_select2($searchTerm = "") {
         $this->db->select('id, name as text');
-        $this->db->from('categories');
+        $this->db->from($this->table);
+        $this->db->where('deleted_at', NULL); // Exclude soft deleted records
         if ($searchTerm != "") {
             $this->db->like('name', $searchTerm);
         }
@@ -86,3 +88,4 @@ class Category_model extends CI_Model {
         return $query->result_array();
     }
 }
+

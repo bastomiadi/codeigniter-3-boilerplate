@@ -14,12 +14,9 @@ class Dashboard extends CI_Controller {
 
     public function index()
     {
-        print_r(APPPATH . 'config/routes_frontend.php');
-        die;
         $data['title'] = 'Dashboard';
         $data['page_title'] = 'Dashboard';
         $data['contents'] = $this->load->view('backend/dashboard/index', '', TRUE);
-        //$data['menus'] = $this->Menu_model->get_all_menus();
         $this->load->view('backend/layouts/main', $data);
     }
 }

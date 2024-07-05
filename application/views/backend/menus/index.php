@@ -12,32 +12,41 @@ function generate_menu_options($menus, $level = 0) {
 }
 ?>
 
-<style>
-    .select2-results__option[aria-selected] {
-        padding-left: 10px;
-    }
-    .select2-results__option[aria-selected="true"] {
-        padding-left: 10px;
-    }
-</style>
-
-<div class="container mt-5">
-    <h2>Manage Menus</h2>
-    <button class="btn btn-success" onclick="add_menu()">Add Menu</button>
-    <table id="menusTable" class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>URL</th>
-                <th>Icon</th>
-                <th>Parent</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Small Box (Stat card) -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Button trigger modal -->
+                <button class="btn btn-success mb-2" onclick="add_menu()">Add Menu</button>
+                <!-- DataTables Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <table id="menusTable" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>URL</th>
+                                    <th>Icon</th>
+                                    <th>Parent</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
 
 <!-- Modal for Add/Edit Menu -->
 <div class="modal fade" id="menuModal" tabindex="-1" role="dialog" aria-labelledby="menuModalLabel" aria-hidden="true">

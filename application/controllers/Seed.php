@@ -17,15 +17,16 @@ class Seed extends CI_Controller {
         $this->profiles_seeders();
         $this->categories_seeders();
         $this->products_seeders();
-        // $this->role_permissions_seeder();
+        $this->role_permissions_seeder();
+        $this->users_roles_seeder();
     }
 
     public function roles_seeders(){
         // Insert default roles
         $roles_data = array(
             array('role_name' => 'superadmin'),
-            array('role_name' => 'admin'),
-            array('role_name' => 'member')
+            array('role_name' => 'member'),
+            // array('role_name' => 'member')
         );
         $this->db->insert_batch('roles', $roles_data);
 
@@ -46,7 +47,7 @@ class Seed extends CI_Controller {
         $this->db->insert('menus', ['menu_name' => 'Users', 'menu_url' => 'backend/users', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac]);
         $this->db->insert('menus', ['menu_name' => 'Roles', 'menu_url' => 'backend/roles', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac]);
         $this->db->insert('menus', ['menu_name' => 'Permissions', 'menu_url' => 'backend/permissions', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac]);
-        $this->db->insert('menus', ['menu_name' => 'Roles Permissions', 'menu_url' => 'backend/roles', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac]);
+        $this->db->insert('menus', ['menu_name' => 'Roles Permissions', 'menu_url' => 'backend/Roles_Permission', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac]);
 
 
         echo "Menus seeding completed.";
@@ -58,7 +59,11 @@ class Seed extends CI_Controller {
             array('permission_name' => 'create'),
             array('permission_name' => 'read'),
             array('permission_name' => 'update'),
-            array('permission_name' => 'delete')
+            array('permission_name' => 'delete'),
+            // Create permissions
+            array('permission_name' => 'manage_products'),
+            array('permission_name' => 'manage_categories'),
+            array('permission_name' => 'manage_user')
         );
         $this->db->insert_batch('permissions', $permissions_data);
 
@@ -68,12 +73,12 @@ class Seed extends CI_Controller {
     public function users_seeders(){
         $faker = Faker\Factory::create();
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 1; $i <= 2; $i++) {
             $data = array(
                 'username' => $faker->userName,
                 'email' => $faker->email,
                 'password' => md5('password'), // Example: Use secure password hashing
-                'role_id' => 2 // Assuming 'member' role_id is 2
+                // 'role_id' => 2 // Assuming 'member' role_id is 2
             );
 
             $this->db->insert('users', $data);
@@ -85,7 +90,7 @@ class Seed extends CI_Controller {
     public function profiles_seeders(){
         $faker = Faker\Factory::create();
 
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 2; $i++) {
             $data = array(
                 'user_id' => $i,
                 'first_name' => $faker->username,
@@ -106,7 +111,7 @@ class Seed extends CI_Controller {
         for ($i = 0; $i < 10; $i++) {
             $data = array(
                 'name' => $faker->word,
-                //'description' => $faker->sentence,
+                'description' => $faker->sentence,
                 'created_at' => date('Y-m-d H:i:s')
             );
 
@@ -134,23 +139,48 @@ class Seed extends CI_Controller {
         echo "Products seeding completed.";
     }
 
+    public function users_roles_seeder(){
+        $this->db->insert('user_roles', [
+            'user_id' => 1,
+            'role_id' => 1  // member role
+        ]);
+
+        $this->db->insert('user_roles', [
+            'user_id' => 2,
+            'role_id' => 2  // member role
+        ]);
+    }
+
     public function role_permissions_seeder() {
-        // Define role permissions
-        $role_permissions = array(
-            // Administrator permissions
-            array('role_id' => 1, 'permission_id' => 1), // create
-            array('role_id' => 1, 'permission_id' => 2), // read
-            array('role_id' => 1, 'permission_id' => 3), // update
-            array('role_id' => 1, 'permission_id' => 4), // delete
+        // // Define role permissions
+        // $role_permissions = array(
+        //     // Administrator permissions
+        //     array('role_id' => 1, 'permission_id' => 1), // create
+        //     array('role_id' => 1, 'permission_id' => 2), // read
+        //     array('role_id' => 1, 'permission_id' => 3), // update
+        //     array('role_id' => 1, 'permission_id' => 4), // delete
 
-            // Member permissions (only read and create)
-            array('role_id' => 2, 'permission_id' => 1), // create
-            array('role_id' => 2, 'permission_id' => 2), // read
-        );
+        //     // Member permissions (only read and create)
+        //     array('role_id' => 2, 'permission_id' => 1), // create
+        //     array('role_id' => 2, 'permission_id' => 2), // read
+        // );
 
-        // Insert role permissions
+        // // Insert role permissions
+        // $this->db->insert_batch('roles_permissions', $role_permissions);
+
+        // echo "Role permissions seeded successfully.";
+
+        // Assign permissions to roles
+        $role_permissions = [
+            ['role_id' => 1, 'permission_id' => 1],
+            ['role_id' => 1, 'permission_id' => 2],
+            ['role_id' => 1, 'permission_id' => 3],
+            ['role_id' => 2, 'permission_id' => 1],
+            ['role_id' => 2, 'permission_id' => 2],
+        ];
         $this->db->insert_batch('roles_permissions', $role_permissions);
 
-        echo "Role permissions seeded successfully.";
+        // echo "Role permissions seeded successfully.";
+
     }
 }

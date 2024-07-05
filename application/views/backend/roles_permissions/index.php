@@ -1,42 +1,58 @@
-<div class="container">
-    <h1>Roles and Permissions</h1>
-    <button class="btn btn-success" onclick="add_role_permission()">Add Role/Permission</button>
-    <br><br>
-    <table id="roles_permissionsTable" class="table table-striped table-bordered" style="width:100%">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Role Name</th>
-                <th>Permission Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Small Box (Stat card) -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Button trigger modal -->
+                    <button class="btn btn-success mb-2" id="addRolePermissionBtn">Roles and Permissions</button>
+                    <div class="card">
+                        <div class="card-body">
+                            <table id="rolePermissionTable" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>Role</th>
+                                <th>Permission</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populate table rows dynamically using AJAX -->
+                            </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
 
 <!-- Modal -->
-<div class="modal fade" id="modal_form" role="dialog">
+<div class="modal fade" id="rolePermissionModal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="form" class="form-horizontal">
+            <form id="rolePermissionForm" class="form-horizontal">
                 <div class="modal-header">
                     <h3 class="modal-title">Add Role/Permission</h3>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="id"/>
                     <div class="form-group">
-                        <label>Role Name</label>
-                        <input name="role_name" class="form-control" type="text">
+                        <label for="role_id">Role:</label>
+                        <select name="role_id" id="role_id" class="form-control"></select>
                     </div>
                     <div class="form-group">
-                        <label>Permission Name</label>
-                        <input name="permission_name" class="form-control" type="text">
+                        <label for="permission_id">Permission:</label>
+                        <input name="permission_id" id="permission_id" class="form-control" type="text">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="btnSave" onclick="save()" class="btn btn-primary">Save</button>
+                    <button type="submit" id="btnSave" class="btn btn-primary">Save</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                 </div>
             </form>
@@ -44,76 +60,132 @@
     </div>
 </div>
 
-<script type="text/javascript">
-var table;
+<!-- <div id="rolePermissionModal" class="modal">
+    <form id="rolePermissionForm">
+        <label for="role_id">Role:</label>
+        <select id="role_id" name="role_id"></select>
+        
+        <select id="permission_id" name="permission_id"></select>
+        <button type="submit">Save</button>
+    </form>
+</div> -->
 
-$(document).ready(function() {
-    table = $('#roles_permissionsTable').DataTable({
-        "ajax": {
-            "url": "<?= site_url('backend/roles_permissions/fetch_roles_permissions') ?>",
-            "type": "GET"
+<script>
+    $(document).ready(function() {
+    var table = $('#rolePermissionTable').DataTable({
+        ajax: '<?= site_url('backend/Roles_Permission/get_role_permissions') ?>',
+        columns: [
+            { data: 'role_name' },
+            { data: 'permission_name' },
+            {
+                data: null,
+                render: function(data, type, row) {
+                    return `<button class="editBtn" data-role_id="${data.role_id}" data-permission_id="${data.permission_id}">Edit</button>
+                            <button class="deleteBtn" data-role_id="${data.role_id}" data-permission_id="${data.permission_id}">Delete</button>`;
+                }
+            }
+        ]
+    });
+
+    $('#addRolePermissionBtn').on('click', function() {
+        $('#rolePermissionForm')[0].reset();
+        $('#rolePermissionForm').data('action', 'add');
+        loadRolesAndPermissions();
+        $('#rolePermissionModal').show();
+    });
+
+    $('#rolePermissionForm').on('submit', function(e) {
+    e.preventDefault();
+    var role_id = $('#role_id').val();
+    var permission_id = $('#permission_id').val();
+    var action = $('#rolePermissionForm').data('action');
+
+    if (!role_id || !permission_id) {
+        Swal.fire('Error', 'Role and Permission cannot be empty.', 'error');
+        return;
+    }
+
+    var url = action === 'add' ? '<?= site_url('backend/Roles_Permission/add_role_permission') ?>' : '<?= site_url('backend/Roles_Permission/update_role_permission') ?>';
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: $('#rolePermissionForm').serialize(),
+        success: function(response) {
+            var res = JSON.parse(response);
+            if (res.status) {
+                $('#rolePermissionModal').hide();
+                table.ajax.reload();
+                Swal.fire('Success', 'Role Permission saved successfully', 'success');
+            } else {
+                Swal.fire('Error', res.message + ' ' + (res.error ? JSON.stringify(res.error) : ''), 'error');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log('AJAX Error: ' + error);
+            Swal.fire('Error', 'Failed to update role permission. Please try again.', 'error');
         }
     });
 });
 
-function add_role_permission() {
-    $('#form')[0].reset(); // reset form on modals
-    $('#modal_form').modal('show'); // show bootstrap modal
-}
-
-function save() {
-    var url;
-    if($('[name="id"]').val() == '') {
-        url = "<?= site_url('backend/roles_permissions/save') ?>";
-    } else {
-        url = "<?= site_url('backend/roles_permissions/save') ?>";
-    }
-
-    // ajax adding data to database
-    $.ajax({
-        url: url,
-        type: "POST",
-        data: $('#form').serialize(),
-        dataType: "JSON",
-        success: function(data) {
-            if(data.status) {
-                $('#modal_form').modal('hide');
-                table.ajax.reload();
-                Swal.fire('Success!', 'Data has been saved.', 'success');
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            Swal.fire('Error!', 'Error adding / updating data', 'error');
-        }
+    $('#rolePermissionTable').on('click', '.editBtn', function() {
+        var role_id = $(this).data('role_id');
+        var permission_id = $(this).data('permission_id');
+        loadRolesAndPermissions(role_id, permission_id);
+        $('#rolePermissionForm').data('action', 'edit');
+        $('#rolePermissionModal').show();
     });
-}
 
-function delete_role_permission(id) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: "<?= site_url('backend/roles_permissions/delete/') ?>" + id,
-                type: "POST",
-                dataType: "JSON",
-                success: function(data) {
-                    if(data.status) {
-                        table.ajax.reload();
-                        Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
+    $('#rolePermissionTable').on('click', '.deleteBtn', function() {
+        var role_id = $(this).data('role_id');
+        var permission_id = $(this).data('permission_id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '<?= site_url('backend/Roles_Permission/delete_role_permission') ?>',
+                    type: 'POST',
+                    data: { role_id: role_id, permission_id: permission_id },
+                    success: function(response) {
+                        var res = JSON.parse(response);
+                        if (res.status) {
+                            table.ajax.reload();
+                            Swal.fire('Deleted!', 'Role Permission has been deleted.', 'success');
+                        } else {
+                            Swal.fire('Error', res.message, 'error');
+                        }
                     }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    Swal.fire('Error!', 'Error deleting data', 'error');
-                }
-            });
-        }
+                });
+            }
+        });
     });
-}
+
+    function loadRolesAndPermissions(role_id = null, permission_id = null) {
+        $('#role_id').empty();
+        $('#permission_id').empty();
+        $.ajax({
+            url: '<?= site_url('backend/Roles_Permission/get_roles') ?>',
+            success: function(data) {
+                var roles = JSON.parse(data);
+                roles.forEach(function(role) {
+                    $('#role_id').append(new Option(role.role_name, role.role_id, role.role_id == role_id));
+                });
+            }
+        });
+        $.ajax({
+            url: '<?= site_url('backend/Roles_Permission/get_permissions') ?>',
+            success: function(data) {
+                var permissions = JSON.parse(data);
+                permissions.forEach(function(permission) {
+                    $('#permission_id').append(new Option(permission.permission_name, permission.permission_id, permission.permission_id == permission_id));
+                });
+            }
+        });
+    }
+});
+
 </script>

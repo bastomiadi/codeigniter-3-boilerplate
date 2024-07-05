@@ -4,18 +4,88 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Migration_Create_menus extends CI_Migration {
 
     public function up() {
-        // Create menus table using raw SQL to ensure correct default value handling
-        $sql = "CREATE TABLE `menus` (
-            `menu_id` INT NOT NULL AUTO_INCREMENT,
-            `menu_name` VARCHAR(50) NOT NULL,
-            `menu_url` VARCHAR(255) NOT NULL,
-            `menu_icon` VARCHAR(50) NULL,
-            `parent_id` INT NULL,
-            `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (`menu_id`),
-            FOREIGN KEY (`parent_id`) REFERENCES `menus` (`menu_id`)
-        ) DEFAULT CHARACTER SET = utf8 COLLATE = utf8_general_ci";
-        $this->db->query($sql);
+        // Load the dbforge library
+        $this->load->dbforge();
+
+        // Define fields
+        $fields = array(
+            'menu_id' => array(
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => TRUE,
+                'auto_increment' => TRUE
+            ),
+            'menu_name' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '50',
+                'null' => FALSE,
+            ),
+            'description' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'null' => FALSE,
+            ),
+            'menu_url' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'null' => FALSE,
+            ),
+            'menu_icon' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '50',
+                'null' => TRUE,
+            ),
+            'parent_id' => array(
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => TRUE,
+                'null' => TRUE,
+            ),
+            'created_at' => array(
+                'type' => 'DATETIME',
+                'null' => TRUE,
+            ),
+            'updated_at' => array(
+                'type' => 'DATETIME',
+                'null' => TRUE,
+            ),
+            'deleted_at' => array(
+                'type' => 'DATETIME',
+                'null' => TRUE,
+            ),
+            'created_by' => array(
+                'type' => 'INT',
+                'null' => TRUE,
+            ),
+            'updated_by' => array(
+                'type' => 'INT',
+                'null' => TRUE,
+            ),
+            'deleted_by' => array(
+                'type' => 'INT',
+                'null' => TRUE,
+            ),
+            'restored_by' => array(
+                'type' => 'INT',
+                'null' => TRUE,
+            ),
+        );
+
+        // Add the fields to the table
+        $this->dbforge->add_field($fields);
+
+        // Define the primary key
+        $this->dbforge->add_key('menu_id', TRUE);
+
+        // Create the table
+        $this->dbforge->create_table('menus', TRUE, array(
+            'ENGINE' => 'InnoDB',
+            'DEFAULT CHARACTER SET' => 'utf8',
+            'COLLATE' => 'utf8_general_ci'
+        ));
+
+        // Add foreign key constraint
+        $this->db->query('ALTER TABLE `menus` ADD CONSTRAINT `fk_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `menus` (`menu_id`)');
     }
 
     public function down() {

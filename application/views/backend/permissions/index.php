@@ -1,114 +1,225 @@
-<div class="container">
-    <h1>Permissions</h1>
-    <button class="btn btn-success" onclick="add_permission()">Add Permission</button>
-    <br><br>
-    <table id="permissionsTable" class="table table-striped table-bordered" style="width:100%">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Permission Name</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Small Box (Stat card) -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#addPermissionModal">
+                    Create Permission
+                </button>
+                <!-- DataTables Card -->
+                <div class="card">
+                    <div class="card-body">
+                        <table id="permission-table" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populate table rows dynamically using AJAX -->
+                        </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
 
-<!-- Modal -->
-<div class="modal fade" id="modal_form" role="dialog">
+<!-- Add Permission Modal -->
+<div class="modal fade" id="addPermissionModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form id="form" class="form-horizontal">
-                <div class="modal-header">
-                    <h3 class="modal-title">Add Permission</h3>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="permission_id"/>
+            <div class="modal-header">
+                <h4 class="modal-title">Add Permission</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form to add Permission -->
+                <form id="addPermissionForm">
                     <div class="form-group">
-                        <label>Permission Name</label>
-                        <input name="permission_name" class="form-control" type="text">
+                        <label for="permissionName">Permission Name</label>
+                        <input type="text" class="form-control" id="permissionName" name="permissionName" required>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="btnSave" onclick="save()" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                </div>
-            </form>
+                    <button type="submit" class="btn btn-primary">Add Permission</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
-<script type="text/javascript">
-var table;
+<!-- Edit Permission Modal -->
+<div class="modal fade" id="editPermissionModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Permission</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form to edit Permission -->
+                <form id="editPermissionForm">
+                    <input type="hidden" id="editPermissionId" name="editPermissionId">
+                    <div class="form-group">
+                        <label for="editpermissionName">Permission Name</label>
+                        <input type="text" class="form-control" id="editpermissionName" name="editpermissionName" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Delete Permission Modal -->
+<div class="modal fade" id="deletePermissionModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Permission</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this Permission?</p>
+                <input type="hidden" id="deletePermissionId" name="deletePermissionId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="confirmDeletePermission">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AJAX and DataTable initialization -->
+<script>
 $(document).ready(function() {
-    table = $('#permissionsTable').DataTable({
+    // DataTable initialization
+    $('#permission-table').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": true,
+        "responsive": true,
+        "dom": 'Bfrtip', // This ensures that the buttons are placed correctly
+        "buttons": [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+        "processing": true,
+        "serverSide": true,
         "ajax": {
-            "url": "<?= site_url('backend/permissions/fetch_permissions') ?>",
-            "type": "GET"
-        }
+            url: "<?php echo base_url('backend/permissions/get_permissions'); ?>",
+            type: "POST"
+        },
+        "columns": [
+            { "data": "permission_id" },
+            { "data": "permission_name" },
+            { "data": "description" },
+            { "data": "actions" }
+        ]
+    });
+
+    // Add Permission Modal
+    $('#addPermissionModal').on('shown.bs.modal', function () {
+        $('#permissionName').focus();
+    });
+
+    // Edit Permission Modal
+    $('#editPermissionModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var PermissionId = button.data('id'); // Extract Permission ID from data-id attribute
+        var permissionName = button.data('name'); // Extract Permission name from data-name attribute
+        $('#editPermissionId').val(PermissionId);
+        $('#editpermissionName').val(permissionName);
+    });
+
+    // Delete Permission Modal
+    $('#deletePermissionModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var PermissionId = button.data('id'); // Extract Permission ID from data-id attribute
+        $('#deletePermissionId').val(PermissionId);
+    });
+
+    // Add Permission Form Submission via AJAX
+    $('#addPermissionForm').submit(function(e) {
+        e.preventDefault();
+        var permissionName = $('#permissionName').val();
+        console.log(permissionName);
+
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo base_url("backend/permissions/add_permission"); ?>',
+            data: { permissionName: permissionName },
+            success: function(response) {
+                $('#addPermissionModal').modal('hide');
+                $('#permission-table').DataTable().ajax.reload();
+                Swal.fire(
+                    'Added!',
+                    'The Permission has been added.',
+                    'success'
+                );
+            }
+        });
+    });
+
+    // Edit Permission Form Submission via AJAX
+    $('#editPermissionForm').submit(function(e) {
+        e.preventDefault();
+        var PermissionId = $('#editPermissionId').val();
+        var permissionName = $('#editpermissionName').val();
+
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo base_url("backend/permissions/edit_permission"); ?>',
+            data: { id: PermissionId, permissionName: permissionName },
+            success: function(response) {
+                $('#editPermissionModal').modal('hide');
+                $('#permission-table').DataTable().ajax.reload();
+                Swal.fire(
+                    'Updated!',
+                    'The Permission has been updated.',
+                    'success'
+                );
+            }
+        });
+    });
+
+    // Delete Permission via AJAX
+    $('#confirmDeletePermission').click(function() {
+        var PermissionId = $('#deletePermissionId').val();
+
+        $.ajax({
+            type: 'POST',
+            url: '<?php echo base_url("backend/permissions/delete_permission"); ?>',
+            data: { id: PermissionId },
+            success: function(response) {
+                $('#deletePermissionModal').modal('hide');
+                $('#permission-table').DataTable().ajax.reload();
+                Swal.fire(
+                    'Deleted!',
+                    'The Permission has been deleted.',
+                    'success'
+                );
+            }
+        });
     });
 });
-
-function add_permission() {
-    $('#form')[0].reset(); // reset form on modals
-    $('#modal_form').modal('show'); // show bootstrap modal
-}
-
-function save() {
-    var url;
-    if($('[name="permission_id"]').val() == '') {
-        url = "<?= site_url('backend/permissions/save') ?>";
-    } else {
-        url = "<?= site_url('backend/permissions/save') ?>";
-    }
-
-    // ajax adding data to database
-    $.ajax({
-        url: url,
-        type: "POST",
-        data: $('#form').serialize(),
-        dataType: "JSON",
-        success: function(data) {
-            if(data.status) {
-                $('#modal_form').modal('hide');
-                table.ajax.reload();
-                Swal.fire('Success!', 'Data has been saved.', 'success');
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            Swal.fire('Error!', 'Error adding / updating data', 'error');
-        }
-    });
-}
-
-function delete_permission(permission_id) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: "<?= site_url('backend/permissions/delete/') ?>" + permission_id,
-                type: "POST",
-                dataType: "JSON",
-                success: function(data) {
-                    if(data.status) {
-                        table.ajax.reload();
-                        Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    Swal.fire('Error!', 'Error deleting data', 'error');
-                }
-            });
-        }
-    });
-}
 </script>

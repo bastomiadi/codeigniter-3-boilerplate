@@ -1,23 +1,18 @@
 <?php
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Migration_Create_categories extends CI_Migration {
+class Migration_Create_user_roles extends CI_Migration {
 
     public function up() {
-        // Define fields for the categories table
-        $fields = array(
-            'id' => array(
+        $this->dbforge->add_field(array(
+            'user_id' => array(
                 'type' => 'INT',
                 'unsigned' => TRUE,
-                'auto_increment' => TRUE
             ),
-            'name' => array(
-                'type' => 'VARCHAR',
-                'constraint' => '100',
-            ),
-            'description' => array(
-                'type' => 'TEXT',
-                'null' => TRUE,
+            'role_id' => array(
+                'type' => 'INT',
+                'unsigned' => TRUE,
             ),
             'created_at' => array(
                 'type' => 'DATETIME',
@@ -47,18 +42,14 @@ class Migration_Create_categories extends CI_Migration {
                 'type' => 'INT',
                 'null' => TRUE,
             ),
-        );
+        ));
+        $this->dbforge->add_key(array('user_id', 'role_id'), TRUE);
+        $this->dbforge->create_table('user_roles');
 
-        // Set primary key
-        $this->dbforge->add_key('id', TRUE);
-
-        // Create the table
-        $this->dbforge->add_field($fields);
-        $this->dbforge->create_table('categories');
     }
 
     public function down() {
-        // Drop the categories table
-        $this->dbforge->drop_table('categories', TRUE);
+        $this->dbforge->drop_table('user_roles', TRUE);
     }
+
 }

@@ -21,10 +21,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // );
 
 
-// application/config/hooks.php
+// application/config/hooks.php menu hook
 $hook['post_controller_constructor'] = array(
     'class'    => 'MenusHook',
     'function' => 'inject_menus',
     'filename' => 'MenusHook.php',
     'filepath' => 'hooks',
 );
+
+// $hook['post_controller_constructor'] = array(
+//     'class'    => 'BackendLayoutHook',
+//     'function' => 'set_layout',
+//     'filename' => 'BackendLayoutHook.php',
+//     'filepath' => 'hooks',
+// );
