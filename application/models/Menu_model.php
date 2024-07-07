@@ -37,9 +37,11 @@ class Menu_model extends CI_Model {
 
         $query = $this->db->get();
 
-        
-
-        return $query->result();
+        if ($query->num_rows() > 0) {
+            return $query->result(); // Return array of menu items
+        } else {
+            return array(); // Return an empty array if no menus found
+        }
     }
 
     // public function get_all() {

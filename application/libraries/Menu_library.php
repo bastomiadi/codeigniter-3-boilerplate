@@ -13,6 +13,9 @@ class Menu_library {
     }
 
     public function get_menus() {
+        if (!$this->menus) {
+            return array(); // Return empty array if no menus retrieved
+        }
         return $this->build_tree($this->menus);
     }
 
