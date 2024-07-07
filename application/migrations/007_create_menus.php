@@ -41,6 +41,11 @@ class Migration_Create_menus extends CI_Migration {
                 'unsigned' => TRUE,
                 'null' => TRUE,
             ),
+            'permission_id' => array(
+                'type' => 'INT',
+                'unsigned' => TRUE,
+                // Add more constraints as needed
+            ),
             'created_at' => array(
                 'type' => 'DATETIME',
                 'null' => TRUE,

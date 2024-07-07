@@ -12,6 +12,8 @@ class Category extends CI_Controller {
         //     redirect('backend/auth/login'); // Redirect unauthorized users to login page
         // }
         // $this->check_auth();
+
+        $this->load->library('rbac'); // Load your RBAC library
     }
 
     // protected function check_auth() {
@@ -53,6 +55,9 @@ class Category extends CI_Controller {
     }
 
     public function get_categories() {
+        
+        $this->rbac->check_permission('update'); // Check if the user can edit a post
+
         $fetch_data = $this->Category_model->make_datatables();
         $data = array();
         foreach ($fetch_data as $row) {
