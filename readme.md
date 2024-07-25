@@ -17,6 +17,8 @@ This project is still early in its development... please feel free to contribute
 ------------------------------------------------------------
 Screenshoot |
 -------------------------------------------------------------------------------
+![Login](screenshot/web/login.png?raw=true)
+![Register](screenshot/web/register.png?raw=true)
 ![Dashboard](screenshot/web/dashboard.png?raw=true)
 
 Installation
