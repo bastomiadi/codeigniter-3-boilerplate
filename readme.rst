@@ -1,71 +1,103 @@
-###################
-What is CodeIgniter
-###################
+<p align="center"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/CodeIgniter_Logo.svg/1024px-CodeIgniter_Logo.svg.png" width="200"></p>
 
-CodeIgniter is an Application Development Framework - a toolkit - for people
-who build web sites using PHP. Its goal is to enable you to develop projects
-much faster than you could if you were writing code from scratch, by providing
-a rich set of libraries for commonly needed tasks, as well as a simple
-interface and logical structure to access these libraries. CodeIgniter lets
-you creatively focus on your project by minimizing the amount of code needed
-for a given task.
+Codeigniter 3 Application Boilerplate
+=====================================
+This package for Codeigniter 3 serves as a basic platform for quickly creating a back-office application. It includes profile creation and management, user management, roles, permissions and a dynamically-generated menu.
 
-*******************
-Release Information
-*******************
+Feature
+-------
+* Configurable backend theme AdminLTE 3
+* Ajax Crud With Sweetalert
+* Support PHP 8
+* User & Menu Management
+* Backend, frontend, Api With Versioning Modular
+* etc.
 
-This repo contains in-development code for future releases. To download the
-latest stable release please visit the `CodeIgniter Downloads
-<https://codeigniter.com/download>`_ page.
+This project is still early in its development... please feel free to contribute!
+------------------------------------------------------------
+Screenshoot |
+-------------------------------------------------------------------------------
+![Dashboard](screenshot/web/dashboard.png?raw=true)
 
-**************************
-Changelog and New Features
-**************************
-
-You can find a list of all changes for each release in the `user
-guide change log <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/changelog.rst>`_.
-
-*******************
-Server Requirements
-*******************
-
-PHP version 5.6 or newer is recommended.
-
-It should work on 5.3.7 as well, but we strongly advise you NOT to run
-such old versions of PHP, because of potential security and performance
-issues, as well as missing features.
-
-************
 Installation
-************
+------------
 
-Please see the `installation section <https://codeigniter.com/userguide3/installation/index.html>`_
-of the CodeIgniter User Guide.
+**1.** Get The Repository
 
-*******
+```bash
+D:\laragon\www>git clone https://github.com/bastomiadi/codeigniter-3-boilerplate
+
+```
+**2.** Setting Database in application/config/database.php
+
+```bash
+D:\laragon\www\codeigniter-3-boilerplate>composer install
+```
+
+**3.** Set your database config in /application/config/database.php. If the database does not exist, create the database first.
+
+```bash
+$db['default'] = array(
+	'dsn'	=> '',
+	'hostname' => 'localhost',
+	'username' => 'root',
+	'password' => '',
+	'database' => 'ci3_boilerplate',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+```
+**5.** Run migrate 
+```bash
+http://localhost/ci3-boilerplate/migrate
+```
+
+**6.** Run Seeder 
+
+```bash
+http://localhost/ci3-boilerplate/seed
+```
+
+**7.** Open in browser http://localhost:8080
+```bash
+Default user and password
++----+-------------+-------------+
+| No |    User     |   Password  |
++----+-------------+-------------+
+| 1  | admin       |   password  |
+| 2  | member      |   password  |
++----+-------------+-------------+
+```
+
+Usage
+-----
+You can find how it works with the read code, controller and views etc. Finnally... Happy Coding!
+..
+
+Restful Api and Docs Work in progress.. : ...
+
+
+Changelog
+--------
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+
+Contributing
+------------
+Contributions are very welcome.
+
 License
-*******
+-------
 
-Please see the `license
-agreement <https://github.com/bcit-ci/CodeIgniter/blob/develop/user_guide_src/source/license.rst>`_.
-
-*********
-Resources
-*********
-
--  `User Guide <https://codeigniter.com/docs>`_
--  `Contributing Guide <https://github.com/bcit-ci/CodeIgniter/blob/develop/contributing.md>`_
--  `Language File Translations <https://github.com/bcit-ci/codeigniter3-translations>`_
--  `Community Forums <http://forum.codeigniter.com/>`_
--  `Community Wiki <https://github.com/bcit-ci/CodeIgniter/wiki>`_
--  `Community Slack Channel <https://codeigniterchat.slack.com>`_
-
-Report security issues to our `Security Panel <mailto:security@codeigniter.com>`_
-or via our `page on HackerOne <https://hackerone.com/codeigniter>`_, thank you.
-
-***************
-Acknowledgement
-***************
-
-The CodeIgniter team would like to thank EllisLab, all the
-contributors to the CodeIgniter project and you, the CodeIgniter user.
+This package is free software distributed under the terms of the [MIT license](LICENSE.md).
