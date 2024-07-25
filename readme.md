@@ -72,7 +72,7 @@ http://localhost/ci3-boilerplate/migrate
 http://localhost/ci3-boilerplate/seed
 ```
 
-**7.** Open in browser http://localhost:8080
+**7.** Open in browser http://localhost/ci3-boilerplate/backend/auth/login
 ```bash
 Default user and password
 +----+-------------+-------------+
