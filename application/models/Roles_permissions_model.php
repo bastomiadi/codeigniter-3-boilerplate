@@ -122,4 +122,13 @@ class Roles_permissions_model extends CI_Model {
         return $this->db->delete('roles_permissions');
     }
 
+    // tambahan untuk middleware auth
+    public function get_permissions_by_role_id($role_id) {
+        $this->db->select('permissions.*');
+        $this->db->from('roles_permissions');
+        $this->db->join('permissions', 'permissions.permission_id = roles_permissions.permission_id');
+        $this->db->where('roles_permissions.role_id', $role_id);
+        return $this->db->get()->result();
+    }
+
 }

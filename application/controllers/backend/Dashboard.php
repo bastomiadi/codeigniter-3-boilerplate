@@ -10,10 +10,12 @@ class Dashboard extends CI_Controller {
         // if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
         //     redirect('backend/auth/login'); // Redirect unauthorized users to login page
         // }
+        $this->load->library('Auth_middleware');
     }
 
     public function index()
     {
+        $this->auth_middleware->check_permission('dashboard');
         $data['title'] = 'Dashboard';
         $data['page_title'] = 'Dashboard';
         $data['contents'] = $this->load->view('backend/dashboard/index', '', TRUE);
