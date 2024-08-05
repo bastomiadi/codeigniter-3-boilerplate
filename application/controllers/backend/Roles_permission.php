@@ -8,14 +8,11 @@ class Roles_Permission extends CI_Controller {
         $this->load->model('Roles_permissions_model');
         $this->load->model('Role_model');
         $this->load->model('Permissions_model');
-
-        // Check if user is logged in and has 'superadmin' role
-        // if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
-        //     redirect('backend/auth/login'); // Redirect unauthorized users to login page
-        // }
+        $this->load->library('Auth_middleware');
     }
 
     public function index() {
+        $this->auth_middleware->check_permission('menu_roles_permission');
         $data['title'] = 'Roles Permissions';
         $data['page_title'] = 'Roles Permissions';
         $data['contents'] = $this->load->view('backend/roles_permissions/index', '', TRUE);

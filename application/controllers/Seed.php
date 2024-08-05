@@ -35,19 +35,19 @@ class Seed extends CI_Controller {
 
     public function menus_seeders(){
         // Insert master menu and sub-menus
-        $this->db->insert('menus', ['menu_name' => 'Master', 'menu_url' => '#', 'menu_icon' => 'fas fa-cogs', 'parent_id' => null, 'permission_id' => 16]);
+        $this->db->insert('menus', ['menu_name' => 'Master', 'menu_url' => '#', 'menu_icon' => 'fas fa-cogs', 'parent_id' => null, 'permission_id' => 49]);
         $master_menu_id = $this->db->insert_id();
-        $this->db->insert('menus', ['menu_name' => 'Products', 'menu_url' => 'backend/product', 'menu_icon' => 'fas fa-box', 'parent_id' => $master_menu_id, 'permission_id' => 6]);
-        $this->db->insert('menus', ['menu_name' => 'Categories', 'menu_url' => 'backend/category', 'menu_icon' => 'fas fa-list', 'parent_id' => $master_menu_id, 'permission_id' => 7]);
-        $this->db->insert('menus', ['menu_name' => 'Menus', 'menu_url' => 'backend/menus', 'menu_icon' => 'fas fa-list', 'parent_id' => $master_menu_id, 'permission_id' => 9]);
-        $this->db->insert('menus', ['menu_name' => 'Dashboard', 'menu_url' => 'backend/dashboard', 'menu_icon' => 'fas fa-list', 'parent_id' => null]);
+        $this->db->insert('menus', ['menu_name' => 'Products', 'menu_url' => 'backend/product', 'menu_icon' => 'fas fa-box', 'parent_id' => $master_menu_id, 'permission_id' => 47]);
+        $this->db->insert('menus', ['menu_name' => 'Categories', 'menu_url' => 'backend/category', 'menu_icon' => 'fas fa-list', 'parent_id' => $master_menu_id, 'permission_id' => 46]);
+        $this->db->insert('menus', ['menu_name' => 'Menus', 'menu_url' => 'backend/menus', 'menu_icon' => 'fas fa-list', 'parent_id' => $master_menu_id, 'permission_id' => 48]);
+        $this->db->insert('menus', ['menu_name' => 'Dashboard', 'menu_url' => 'backend/dashboard', 'menu_icon' => 'fas fa-list', 'parent_id' => 2]);
 
-        $this->db->insert('menus', ['menu_name' => 'RBAC', 'menu_url' => '#', 'menu_icon' => 'fas fa-list', 'parent_id' => null, 'permission_id' => 17]);
+        $this->db->insert('menus', ['menu_name' => 'RBAC', 'menu_url' => '#', 'menu_icon' => 'fas fa-list', 'parent_id' => null, 'permission_id' => 50]);
         $rbac = $this->db->insert_id();
-        $this->db->insert('menus', ['menu_name' => 'Users', 'menu_url' => 'backend/users', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac, 'permission_id' => 8]);
-        $this->db->insert('menus', ['menu_name' => 'Roles', 'menu_url' => 'backend/roles', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac, 'permission_id' => 13]);
-        $this->db->insert('menus', ['menu_name' => 'Permissions', 'menu_url' => 'backend/permissions', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac, 'permission_id' => 14]);
-        $this->db->insert('menus', ['menu_name' => 'Roles Permissions', 'menu_url' => 'backend/Roles_Permission', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac, 'permission_id' => 15]);
+        $this->db->insert('menus', ['menu_name' => 'Users', 'menu_url' => 'backend/users', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac, 'permission_id' => 51]);
+        $this->db->insert('menus', ['menu_name' => 'Roles', 'menu_url' => 'backend/roles', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac, 'permission_id' => 52]);
+        $this->db->insert('menus', ['menu_name' => 'Permissions', 'menu_url' => 'backend/permissions', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac, 'permission_id' => 54]);
+        $this->db->insert('menus', ['menu_name' => 'Roles Permissions', 'menu_url' => 'backend/Roles_Permission', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac, 'permission_id' => 53]);
 
         echo "Menus seeding completed.";
     }
@@ -56,26 +56,82 @@ class Seed extends CI_Controller {
          // Insert default permissions
          $permissions_data = array(
             // Create permissions
-            array('permission_name' => 'create'),
-            array('permission_name' => 'read'),
-            array('permission_name' => 'update'),
-            array('permission_name' => 'delete'),
-            array('permission_name' => 'detail'),
 
-            array('permission_name' => 'manage_products'),
-            array('permission_name' => 'manage_categories'),
-            array('permission_name' => 'manage_users'),
-            array('permission_name' => 'manage_menus'),
-            array('permission_name' => 'update_own'),
+            // auth
+            array('permission_name' => 'logout'),
 
-            array('permission_name' => 'restored'),
+            // dashboard
             array('permission_name' => 'dashboard'),
-            array('permission_name' => 'manage_roles'),
-            array('permission_name' => 'manage_permissions'),
-            array('permission_name' => 'manage_roles_permissions'),
 
+            // profile
+            array('permission_name' => 'update_profile'),
+
+            // category
+            array('permission_name' => 'create_category'),
+            array('permission_name' => 'read_category'),
+            array('permission_name' => 'update_category'),
+            array('permission_name' => 'delete_category'),
+            array('permission_name' => 'detail_category'),
+            array('permission_name' => 'restore_category'),
+
+            // product
+            array('permission_name' => 'create_product'),
+            array('permission_name' => 'read_product'),
+            array('permission_name' => 'update_product'),
+            array('permission_name' => 'delete_product'),
+            array('permission_name' => 'detail_product'),
+            array('permission_name' => 'restore_product'),
+
+            // menu
+            array('permission_name' => 'create_menu'),
+            array('permission_name' => 'read_menu'),
+            array('permission_name' => 'update_menu'),
+            array('permission_name' => 'delete_menu'),
+            array('permission_name' => 'detail_menu'),
+            array('permission_name' => 'restore_menu'),
+
+            // user
+            array('permission_name' => 'create_user'),
+            array('permission_name' => 'read_user'),
+            array('permission_name' => 'update_user'),
+            array('permission_name' => 'delete_user'),
+            array('permission_name' => 'detail_user'),
+            array('permission_name' => 'restore_user'),
+
+            // role
+            array('permission_name' => 'create_role'),
+            array('permission_name' => 'read_role'),
+            array('permission_name' => 'update_role'),
+            array('permission_name' => 'delete_role'),
+            array('permission_name' => 'detail_role'),
+            array('permission_name' => 'restore_role'),
+
+            // permission
+            array('permission_name' => 'create_permission'),
+            array('permission_name' => 'read_permission'),
+            array('permission_name' => 'update_permission'),
+            array('permission_name' => 'delete_permission'),
+            array('permission_name' => 'detail_permission'),
+            array('permission_name' => 'restore_permission'),
+
+            // role permission
+            array('permission_name' => 'create_role_permission'),
+            array('permission_name' => 'read_role_permission'),
+            array('permission_name' => 'update_role_permission'),
+            array('permission_name' => 'delete_role_permission'),
+            array('permission_name' => 'detail_role_permission'),
+            array('permission_name' => 'restore_role_permission'),
+
+            // permission menu & sub menu
+            array('permission_name' => 'menu_category'),
+            array('permission_name' => 'menu_product'),
+            array('permission_name' => 'menu_menu'),
             array('permission_name' => 'menu_master'),
             array('permission_name' => 'menu_rbac'),
+            array('permission_name' => 'menu_user'),
+            array('permission_name' => 'menu_roles'),
+            array('permission_name' => 'menu_roles_permission'),
+            array('permission_name' => 'menu_permission'),
         );
         $this->db->insert_batch('permissions', $permissions_data);
 
@@ -83,19 +139,6 @@ class Seed extends CI_Controller {
     }
 
     public function users_seeders(){
-        // $faker = Faker\Factory::create();
-
-        // for ($i = 1; $i <= 2; $i++) {
-        //     $data = array(
-        //         'username' => $faker->userName,
-        //         'email' => $faker->email,
-        //         'password' => md5('password'), // Example: Use secure password hashing
-        //         // 'role_id' => 2 // Assuming 'member' role_id is 2
-        //     );
-
-        //     $this->db->insert('users', $data);
-        // }
-
         $data = array(
             array(
                 'username' => 'admin',
@@ -178,55 +221,39 @@ class Seed extends CI_Controller {
             'user_id' => 2,
             'role_id' => 2  // member role
         ]);
+
+        echo "users roles seeded successfully.";
     }
 
     public function role_permissions_seeder() {
-        // // Define role permissions
-        // $role_permissions = array(
-        //     // Administrator permissions
-        //     array('role_id' => 1, 'permission_id' => 1), // create
-        //     array('role_id' => 1, 'permission_id' => 2), // read
-        //     array('role_id' => 1, 'permission_id' => 3), // update
-        //     array('role_id' => 1, 'permission_id' => 4), // delete
-
-        //     // Member permissions (only read and create)
-        //     array('role_id' => 2, 'permission_id' => 1), // create
-        //     array('role_id' => 2, 'permission_id' => 2), // read
-        // );
-
-        // // Insert role permissions
-        // $this->db->insert_batch('roles_permissions', $role_permissions);
-
-        // echo "Role permissions seeded successfully.";
-
         // Assign permissions to roles
+        // member
         $role_permissions = [
-            
             ['role_id' => 2, 'permission_id' => 1],
             ['role_id' => 2, 'permission_id' => 2],
-
-            // superadmin
-            ['role_id' => 1, 'permission_id' => 1],
-            ['role_id' => 1, 'permission_id' => 2],
-            ['role_id' => 1, 'permission_id' => 3],
-            ['role_id' => 1, 'permission_id' => 4],
-            ['role_id' => 1, 'permission_id' => 5],
-            ['role_id' => 1, 'permission_id' => 6],
-            ['role_id' => 1, 'permission_id' => 7],
-            ['role_id' => 1, 'permission_id' => 8],
-            ['role_id' => 1, 'permission_id' => 9],
-            ['role_id' => 1, 'permission_id' => 10],
-            ['role_id' => 1, 'permission_id' => 11],
-            ['role_id' => 1, 'permission_id' => 12],
-            ['role_id' => 1, 'permission_id' => 13],
-            ['role_id' => 1, 'permission_id' => 14],
-            ['role_id' => 1, 'permission_id' => 15],
-            ['role_id' => 1, 'permission_id' => 16],
-            ['role_id' => 1, 'permission_id' => 17],
+            ['role_id' => 2, 'permission_id' => 3],
+            ['role_id' => 2, 'permission_id' => 4],
+            ['role_id' => 2, 'permission_id' => 10],
+            ['role_id' => 2, 'permission_id' => 49],
+            ['role_id' => 2, 'permission_id' => 46],
+            ['role_id' => 2, 'permission_id' => 47],
         ];
         $this->db->insert_batch('roles_permissions', $role_permissions);
 
-        // echo "Role permissions seeded successfully.";
+        $data = array();
+        // superadmin
+        $query = $this->db->get('permissions');
+        // Return the result as an array
+        foreach ($query->result_array() as $key => $value) {
+            $data[$key] = array(
+                'role_id' => 1,
+                'permission_id' => $value['permission_id']
+            );
+        }
+
+        $this->db->insert_batch('roles_permissions', $data);
+        
+        echo "Role permissions seeded successfully.";
 
     }
 }

@@ -6,19 +6,15 @@ class Menus extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('Menu_model');
-
-        // Check if user is logged in and has 'superadmin' role
-        // if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
-        //     redirect('backend/auth/login'); // Redirect unauthorized users to login page
-        // }
+        $this->load->library('Auth_middleware');
     }
 
     public function index() {
+        $this->auth_middleware->check_permission('menu_menu');
         $data['title'] = 'Menus';
         $data['page_title'] = 'Menus';
         $data['contents'] = $this->load->view('backend/menus/index', '', TRUE);
         $this->load->view('backend/layouts/main', $data);
-        //$this->load->view('backend/menus/index');
     }
 
     public function get_menus() {

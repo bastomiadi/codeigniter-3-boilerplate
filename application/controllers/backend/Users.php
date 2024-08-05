@@ -6,15 +6,15 @@ class Users extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('User_model');
+        $this->load->library('Auth_middleware');
     }
 
     public function index() {
+        $this->auth_middleware->check_permission('menu_user');
         $data['title'] = 'Users';
         $data['page_title'] = 'Users';
         $data['contents'] = $this->load->view('backend/users/index', '', TRUE);
         $this->load->view('backend/layouts/main', $data);
-
-        // $this->load->view('backend/users/index');
     }
 
     public function get_users() {

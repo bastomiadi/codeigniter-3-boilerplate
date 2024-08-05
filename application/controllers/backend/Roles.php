@@ -6,19 +6,15 @@ class Roles extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('role_model');
-        
-        // Check if user is logged in and has 'superadmin' role
-        // if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
-        //     redirect('backend/auth/login'); // Redirect unauthorized users to login page
-        // }
+        $this->load->library('Auth_middleware');
     }
 
     public function index() {
+        $this->auth_middleware->check_permission('menu_roles');
         $data['title'] = 'Roles';
         $data['page_title'] = 'Roles';
         $data['contents'] = $this->load->view('backend/roles/index', '', TRUE);
         $this->load->view('backend/layouts/main', $data);
-        //$this->load->view('backend/roles/index');
     }
 
     public function get_roles() {

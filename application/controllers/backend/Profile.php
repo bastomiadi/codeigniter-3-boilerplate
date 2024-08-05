@@ -5,17 +5,14 @@ class Profile extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        // Ensure the user is logged in
-        if (!$this->session->userdata('logged_in')) {
-            redirect('backend/auth/login');
-        }
         // Load necessary models here
         $this->load->model('User_model');
         $this->load->model('Profile_model');
+        $this->load->library('Auth_middleware');
     }
 
     public function index() {
-
+        $this->auth_middleware->check_permission('update_profile');
         $user_id = $this->session->userdata('user_id');
         $data['user'] = $this->User_model->get_user($user_id);
         $data['profile'] = $this->Profile_model->get_profile($user_id);
@@ -52,12 +49,11 @@ class Profile extends CI_Controller {
                     // Handle error
                     $this->session->set_flashdata('error', 'Failed to create post.');
                 }
-                redirect('backend/profile');
+                return redirect('backend/profile');
             }
         }
         $data['contents'] = $this->load->view('backend/profile/index', $data, TRUE);
         $this->load->view('backend/layouts/main', $data);
+        return $this;
     }
-
-    // Add methods to handle profile update if needed
 }

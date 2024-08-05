@@ -31,7 +31,7 @@ class Categories extends CI_Model {
         $this->db->insert($this->table, $data);
     }
 
-    public function edit_categories($id, $id, $name, $description, $created_at, $updated_at, $deleted_at, $created_by, $updated_by, $deleted_by, $restored_by) {
+    public function edit_categories($id, $name, $description, $created_at, $updated_at, $deleted_at, $created_by, $updated_by, $deleted_by, $restored_by) {
         $data = array(
             'id' => $id,
             'name' => $name,

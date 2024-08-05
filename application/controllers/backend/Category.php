@@ -6,48 +6,11 @@ class Category extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('Category_model');
-
-        // // Check if user is logged in and has 'member' role
-        // if (!$this->session->userdata('logged_in') || $this->session->userdata('role_id') != 1) {
-        //     redirect('backend/auth/login'); // Redirect unauthorized users to login page
-        // }
-        // $this->check_auth();
-
-        $this->load->library('rbac'); // Load your RBAC library
+        $this->load->library('Auth_middleware');
     }
 
-    // protected function check_auth() {
-
-    //     // echo '<pre>';
-    //     // print_r($this->session->userdata('logged_in'));
-    //     // echo '</pre>';
-    //     // die;
-
-    //     // Check if user is logged in
-    //     if (!$this->session->userdata('logged_in')) {
-    //         redirect('backend/auth/login');
-    //     }
-
-    //     // Check if user has required role
-    //     $role_id = $this->session->userdata('role_id');
-    //     $controller = $this->router->fetch_class();
-
-    //     // Define role-based access
-    //     $access = array(
-    //         'member' => array('category', 'product'), // Member can access category and product
-    //         'admin' => array('dashboard', 'category', 'product', 'user'), // Add other controllers for admin
-    //         'superadmin' => array('dashboard', 'category', 'product', 'user', 'settings') // Add other controllers for superadmin
-    //     );
-
-    //     $role_name = ($role_id == 1) ? 'superadmin' : (($role_id == 2) ? 'admin' : 'member');
-
-    //     // Check if current controller is in allowed controllers for the role
-    //     if (!in_array($controller, $access[$role_name])) {
-    //         redirect('backend/auth/permission_denied'); // Redirect to permission denied page
-    //     }
-    // }
-
     public function index() {
+        $this->auth_middleware->check_permission('menu_category');
         $data['title'] = 'Category';
         $data['page_title'] = 'Category';
         $data['contents'] = $this->load->view('backend/category/index', '', TRUE);
@@ -55,9 +18,6 @@ class Category extends CI_Controller {
     }
 
     public function get_categories() {
-        
-        $this->rbac->check_permission('update'); // Check if the user can edit a post
-
         $fetch_data = $this->Category_model->make_datatables();
         $data = array();
         foreach ($fetch_data as $row) {
