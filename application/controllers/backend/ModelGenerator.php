@@ -10,27 +10,19 @@ class ModelGenerator extends CI_Controller {
         $this->load->database(); // Load database library
     }
 
-    public function index() {
-        $data['title'] = 'Model Generator';
-        $data['page_title'] = 'Model Generator';
-        $data['contents'] = $this->load->view('backend/generator/generate_model', '', TRUE);
-        $data['tables'] = $this->fetchTables(); // Fetch table names from database
-        $this->load->view('backend/layouts/main', $data);
-    }
-
-    private function fetchTables() {
-        $query = $this->db->query("SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()");
-        $tables = array();
-        foreach ($query->result() as $row) {
-            if (isset($row->table_name)) {
-                $tables[] = $row->table_name;
-            } else {
-                // Log or display error message for debugging
-                log_message('error', 'table_name property not found in fetchTables()');
-            }
-        }        
-        return $tables;
-    }
+    // private function fetchTables() {
+    //     $query = $this->db->query("SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()");
+    //     $tables = array();
+    //     foreach ($query->result() as $row) {
+    //         if (isset($row->table_name)) {
+    //             $tables[] = $row->table_name;
+    //         } else {
+    //             // Log or display error message for debugging
+    //             log_message('error', 'table_name property not found in fetchTables()');
+    //         }
+    //     }        
+    //     return $tables;
+    // }
     
 
     public function model() {
@@ -41,28 +33,31 @@ class ModelGenerator extends CI_Controller {
         $this->form_validation->set_rules('model_name', 'Model Name', 'required');
         $this->form_validation->set_rules('model_path', 'Model Path', 'required');
 
-        if ($this->form_validation->run() === FALSE) {
-            //$this->load->view('generate_model');
-            $data['title'] = 'Model Generator';
-            $data['page_title'] = 'Model Generator';
-            $data['contents'] = $this->load->view('backend/generator/generate_model', '', TRUE);
-            $this->load->view('backend/layouts/main', $data);
-            
-        } else {
+        if ($this->form_validation->run() === TRUE && $this->input->server('REQUEST_METHOD') == 'POST') {
+
             $table = $this->input->post('table');
             $modelName = $this->input->post('model_name');
             $modelPath = $this->input->post('model_path');
-            $namespace = $this->input->post('namespace');
+            // $namespace = $this->input->post('namespace');
+
+            $primary_key_fields = array();
 
             // Fetch table fields
             $fields = $this->db->list_fields($table);
 
+            // Get field data
+            $fields_data = $this->db->field_data($table);
+
+            foreach ($fields_data as $key => $value) {
+                if($value->primary_key == 1){
+                    $primary_key_fields = $value->name;
+                }
+                break;
+            }
+
             // Create the model content
             $modelContent = "<?php\n";
-            if (!empty($namespace)) {
-                $modelContent .= "namespace $namespace;\n\n";
-            }
-           
+
             $modelContent .= "defined('BASEPATH') OR exit('No direct script access allowed');\n\n";
             $modelContent .= "use CI_Model;\n\n";
             $modelContent .= "class $modelName extends CI_Model {\n\n";
@@ -81,9 +76,9 @@ class ModelGenerator extends CI_Controller {
 
             // CRUD methods
             $modelContent .= $this->generateAddMethod($fields);
-            $modelContent .= $this->generateEditMethod($fields);
-            $modelContent .= $this->generateSoftDeleteMethod($fields);
-            $modelContent .= $this->generateDeleteMethod($fields);
+            $modelContent .= $this->generateEditMethod($fields, $primary_key_fields);
+            $modelContent .= $this->generateSoftDeleteMethod($fields, $primary_key_fields);
+            $modelContent .= $this->generateDeleteMethod($fields, $primary_key_fields);
 
             // Query methods
             $modelContent .= $this->generateMakeQueryMethod();
@@ -95,23 +90,28 @@ class ModelGenerator extends CI_Controller {
             $modelContent .= "}\n";
 
             // Write the model file
-            $modelFilePath = rtrim(APPPATH . $modelPath, '/') . '/' . $modelName . '.php';
-            if (write_file($modelFilePath, $modelContent)) {
-                $data['message'] = "Model generated successfully at: $modelFilePath";
-                // $this->load->view('generate_model', $data);
-                $data['title'] = 'Model Generator';
-                $data['page_title'] = 'Model Generator';
-                $data['contents'] = $this->load->view('backend/generator/generate_model', '', TRUE);
-                $this->load->view('backend/layouts/main', $data);
-            } else {
-                $data['error'] = "Unable to write model file. Check file path and permissions.";
-                //$this->load->view('generate_model', $data);
-                $data['title'] = 'Model Generator';
-                $data['page_title'] = 'Model Generator';
-                $data['contents'] = $this->load->view('backend/generator/generate_model', '', TRUE);
-                $this->load->view('backend/layouts/main', $data);
+            $modelFilePath = rtrim(APPPATH . $modelPath, '/') . '/';
+            if (!is_dir($modelFilePath)) {
+                // Create the directory with 0755 permissions
+                mkdir($modelFilePath, 0755, true);
             }
+
+            if (write_file($modelFilePath . $modelName . '.php', $modelContent)) {
+                // Redirect or send success message
+                $this->session->set_flashdata('success', "Model {$modelName} generated successfully.");
+            } else {
+                // Handle error
+                $this->session->set_flashdata('error', "Model {$modelName} generated failed.");
+            }
+            return redirect('backend/generator-model');
         }
+            
+        //$this->load->view('generate_model', $data);
+        $data['title'] = 'Model Generator';
+        $data['page_title'] = 'Model Generator';
+        $data['contents'] = $this->load->view('backend/generator/generate_model', '', TRUE);
+        $this->load->view('backend/layouts/main', $data);
+        return $this; 
     }
 
     // Helper function to generate array code for var declaration
@@ -141,8 +141,8 @@ class ModelGenerator extends CI_Controller {
         return $methodContent;
     }
 
-    private function generateEditMethod($fields) {
-        $methodContent = "    public function edit_" . $this->singularize($this->input->post('table')) . "(\$id, ";
+    private function generateEditMethod($fields, $primary_key_fields) {
+        $methodContent = "    public function edit_" . $this->singularize($this->input->post('table')) . "(";
         foreach ($fields as $field) {
             $methodContent .= "\$$field, ";
         }
@@ -153,25 +153,25 @@ class ModelGenerator extends CI_Controller {
             $methodContent .= "            '$field' => \$$field,\n";
         }
         $methodContent .= "        );\n";
-        $methodContent .= "        \$this->db->where('id', \$id)->update(\$this->table, \$data);\n";
+        $methodContent .= "        \$this->db->where('{$primary_key_fields}', \${$primary_key_fields})->update(\$this->table, \$data);\n";
         $methodContent .= "    }\n\n";
         return $methodContent;
     }
 
-    private function generateSoftDeleteMethod($fields) {
-        $methodContent = "    public function soft_delete_" . $this->singularize($this->input->post('table')) . "(\$id, \$deleted_by) {\n";
+    private function generateSoftDeleteMethod($fields, $primary_key_fields) {
+        $methodContent = "    public function soft_delete_" . $this->singularize($this->input->post('table')) . "(\${$primary_key_fields}, \$deleted_by) {\n";
         $methodContent .= "        \$data = array(\n";
         $methodContent .= "            'deleted_at' => date('Y-m-d H:i:s'),\n";
         $methodContent .= "            'deleted_by' => \$deleted_by\n";
         $methodContent .= "        );\n";
-        $methodContent .= "        \$this->db->where('id', \$id)->update(\$this->table, \$data);\n";
+        $methodContent .= "        \$this->db->where('{$primary_key_fields}', \${$primary_key_fields})->update(\$this->table, \$data);\n";
         $methodContent .= "    }\n\n";
         return $methodContent;
     }
 
-    private function generateDeleteMethod($fields) {
-        $methodContent = "    public function delete_" . $this->singularize($this->input->post('table')) . "(\$id) {\n";
-        $methodContent .= "        \$this->db->where('id', \$id)->delete(\$this->table);\n";
+    private function generateDeleteMethod($fields, $primary_key_fields) {
+        $methodContent = "    public function delete_" . $this->singularize($this->input->post('table')) . "(\${$primary_key_fields}) {\n";
+        $methodContent .= "        \$this->db->where('{$primary_key_fields}', \${$primary_key_fields})->delete(\$this->table);\n";
         $methodContent .= "    }\n\n";
         return $methodContent;
     }

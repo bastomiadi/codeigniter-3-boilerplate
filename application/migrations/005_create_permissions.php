@@ -15,6 +15,11 @@ class Migration_Create_permissions extends CI_Migration {
                 'constraint' => '50',
                 'not_null' => TRUE
             ),
+            'route' => array(
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'not_null' => TRUE
+            ),
             'description' => array(
                 'type' => 'VARCHAR',
                 'constraint' => '255',
