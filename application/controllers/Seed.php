@@ -48,6 +48,11 @@ class Seed extends CI_Controller {
         $this->db->insert('menus', ['menu_name' => 'Roles', 'menu_url' => 'backend/roles', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac, 'permission_id' => 52]);
         $this->db->insert('menus', ['menu_name' => 'Permissions', 'menu_url' => 'backend/permissions', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac, 'permission_id' => 54]);
         $this->db->insert('menus', ['menu_name' => 'Roles Permissions', 'menu_url' => 'backend/Roles_Permission', 'menu_icon' => 'fas fa-list', 'parent_id' => $rbac, 'permission_id' => 53]);
+
+        $this->db->insert('menus', ['menu_name' => 'Generator', 'menu_url' => '#', 'menu_icon' => 'fas fa-list', 'parent_id' => null, 'permission_id' => 57]);
+        $generator = $this->db->insert_id();
+        $this->db->insert('menus', ['menu_name' => 'Generate Model', 'menu_url' => 'backend/generator-model', 'menu_icon' => 'fas fa-list', 'parent_id' => $generator, 'permission_id' => 46]);
+        $this->db->insert('menus', ['menu_name' => 'Generate CRUD', 'menu_url' => 'backend/generator-crud', 'menu_icon' => 'fas fa-list', 'parent_id' => $generator, 'permission_id' => 47]);
         
         echo "Menus seeding completed.";
     }
@@ -60,116 +65,146 @@ class Seed extends CI_Controller {
             // auth
             array(
                 'permission_name' => 'logout', 
-                'route' => 'backend/auth/logout'
+                //'route' => 'backend/auth/logout'
             ),
             
             // dashboard
             array(
                 'permission_name' => 'dashboard',
-                'route' => 'backend/dashboard'
+                //'route' => 'backend/dashboard'
             ),
             
             // profile
             array(
                 'permission_name' => 'update_profile',
-                'route' => 'backend/profile'
+                //'route' => 'backend/profile'
             ),
         
             // category
             array(
                 'permission_name' => 'create_category',
-                'route'=> ''
+                //'route'=> ''
             ),
             array(
                 'permission_name' => 'read_category',
-                'route'=> ''
+                //'route'=> ''
             ),
             array(
                 'permission_name' => 'update_category',
-                'route'=> ''
+                //'route'=> ''
             ),
             array(
                 'permission_name' => 'delete_category',
-                'route'=> ''
+                //'route'=> ''
             ),
             array(
                 'permission_name' => 'detail_category',
-                'route'=> ''
+                //'route'=> ''
             ),
             array(
                 'permission_name' => 'restore_category',
-                'route'=> ''
+                //'route'=> ''
             ),
             
             // product
             array('permission_name' => 'create_product',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'read_product',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'update_product',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'delete_product',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'detail_product',
-            'route'=> ''),
+           //'route'=> ''
+           ),
             array('permission_name' => 'restore_product',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             
             // menu
             array('permission_name' => 'create_menu',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'read_menu',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'update_menu',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'delete_menu',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'detail_menu',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'restore_menu',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             
             // user
             array('permission_name' => 'create_user',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'read_user',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'update_user',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'delete_user',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'detail_user',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'restore_user',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             
             // role
             array('permission_name' => 'create_role',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'read_role',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'update_role',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'delete_role',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'detail_role',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'restore_role',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             
             // permission
             array('permission_name' => 'create_permission',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'read_permission',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'update_permission',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'delete_permission',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'detail_permission',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             array('permission_name' => 'restore_permission',
-            'route'=> ''),
+            //'route'=> ''
+            ),
             
             // role permission
             array('permission_name' => 'create_role_permission'),
@@ -178,6 +213,10 @@ class Seed extends CI_Controller {
             array('permission_name' => 'delete_role_permission'),
             array('permission_name' => 'detail_role_permission'),
             array('permission_name' => 'restore_role_permission'),
+
+            // generator permission
+            array('permission_name' => 'generator_model'),
+            array('permission_name' => 'generator_crud'),
             
             // permission menu & sub menu
             array('permission_name' => 'menu_category'),
@@ -189,7 +228,9 @@ class Seed extends CI_Controller {
             array('permission_name' => 'menu_roles'),
             array('permission_name' => 'menu_roles_permission'),
             array('permission_name' => 'menu_permission'),
+            array('permission_name' => 'menu_generator'),
     );
+
     $this->db->insert_batch('permissions', $permissions_data);
     
     echo "Permissions seeding completed.";

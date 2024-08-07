@@ -182,7 +182,7 @@ class CrudGenerator extends CI_Controller {
         $template .= "        \"processing\": true,\n";
         $template .= "        \"serverSide\": true,\n";
         $template .= "        \"ajax\": {\n";
-        $template .= "            url: \"" . "<?php echo base_url('backend/" . $table_name . "/get_" . $table_name . "s'); ?>\",\n";
+        $template .= "            url: \"" . "<?php echo base_url('backend/" . $table_name . "/get_" . $table_name . "'); ?>\",\n";
         $template .= "            type: \"POST\"\n";
         $template .= "        },\n";
         $template .= "        \"columns\": [\n";
@@ -312,11 +312,8 @@ class CrudGenerator extends CI_Controller {
         $controller_template .= "    public function __construct() {\n";
         $controller_template .= "        parent::__construct();\n";
         $controller_template .= "        \$this->load->model('" . ucfirst($table_name) . "_model');\n";
-        $controller_template .= "        \$this->load->library('Auth_middleware');\n";
-        $controller_template .= "        \$this->check_permission();\n";
         $controller_template .= "    }\n\n";
         $controller_template .= "    public function index() {\n";
-        $controller_template .= "        \$this->auth_middleware->check_permission('menu_" . $table_name . "');\n\n";
         $controller_template .= "        \$data['title'] = '" . ucfirst($table_name) . "';\n";
         $controller_template .= "        \$data['page_title'] = '" . ucfirst($table_name) . "';\n";
         $controller_template .= "        \$data['contents'] = \$this->load->view('backend/" . $table_name . "/index', '', TRUE);\n";
