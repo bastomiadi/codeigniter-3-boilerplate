@@ -85,7 +85,7 @@ class ModelGenerator extends CI_Controller {
             $modelContent .= $this->generateMakeDatatablesMethod();
             $modelContent .= $this->generateGetFilteredDataMethod();
             $modelContent .= $this->generateGetAllDataMethod($fields_data);
-            $modelContent .= $this->generateGetSelect2Method();
+            $modelContent .= $this->generateGetSelect2Method($fields_data, $fields);
 
             $modelContent .= "}\n";
 
@@ -161,6 +161,7 @@ class ModelGenerator extends CI_Controller {
     private function generateSoftDeleteMethod($fields_data, $primary_key_fields) {
         $methodContent = "    public function soft_delete_" . $this->singularize($this->input->post('table')) . "(\${$primary_key_fields}, \$deleted_by) {\n";
         $methodContent .= "        \$data = array(\n";
+        
         foreach ($fields_data as $key => $value) {
             if($value->name = 'deleted_at'){
                 $methodContent .= "            'deleted_at' => date('Y-m-d H:i:s'),\n";
@@ -168,6 +169,7 @@ class ModelGenerator extends CI_Controller {
             if($value->name = 'deleted_at'){
                 $methodContent .= "            'deleted_by' => \$deleted_by\n";
             }
+            break;
         }
         $methodContent .= "        );\n";
         $methodContent .= "        \$this->db->where('{$primary_key_fields}', \${$primary_key_fields})->update(\$this->table, \$data);\n";
@@ -230,6 +232,7 @@ class ModelGenerator extends CI_Controller {
             if($value->name = 'deleted_at'){
                 $methodContent .= "        \$this->db->where('deleted_at', NULL); // Exclude soft deleted records\n";
             }
+            break;
         }
 
         $methodContent .= "        return \$this->db->count_all_results();\n";
@@ -237,7 +240,12 @@ class ModelGenerator extends CI_Controller {
         return $methodContent;
     }
 
-    private function generateGetSelect2Method($fields_data) {
+    private function generateGetSelect2Method($fields_data, $fields) {
+
+        // echo '<pre>';
+        // print_r($fields_data);
+        // echo '</pre>';
+        // die;
         $methodContent = "    public function get_select2(\$searchTerm = \"\") {\n";
         $methodContent .= "        \$this->db->select('id, name as text');\n";
         $methodContent .= "        \$this->db->from(\$this->table);\n";
@@ -245,10 +253,11 @@ class ModelGenerator extends CI_Controller {
             if($value->name = 'deleted_at'){
                 $methodContent .= "        \$this->db->where('deleted_at', NULL); // Exclude soft deleted records\n";
             }
+            break;
         }
         $methodContent .= "        if (\$searchTerm != \"\") {\n";
         //$methodContent .= "            \$this->db->like('name', \$searchTerm);\n";
-        $methodContent .= "            \$this->db->like('{$fields_data[1]['name']}', \$searchTerm);\n";
+        $methodContent .= "            \$this->db->like('{$fields[1]}', \$searchTerm);\n";
         $methodContent .= "        }\n";
         $methodContent .= "        \$query = \$this->db->get();\n";
         $methodContent .= "        return \$query->result_array();\n";
