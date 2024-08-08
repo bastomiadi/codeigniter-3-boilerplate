@@ -241,13 +241,8 @@ class ModelGenerator extends CI_Controller {
     }
 
     private function generateGetSelect2Method($fields_data, $fields) {
-
-        // echo '<pre>';
-        // print_r($fields_data);
-        // echo '</pre>';
-        // die;
         $methodContent = "    public function get_select2(\$searchTerm = \"\") {\n";
-        $methodContent .= "        \$this->db->select('id, name as text');\n";
+        $methodContent .= "        \$this->db->select('id, {$fields[1]} as text');\n";
         $methodContent .= "        \$this->db->from(\$this->table);\n";
         foreach ($fields_data as $key => $value) {
             if($value->name = 'deleted_at'){
