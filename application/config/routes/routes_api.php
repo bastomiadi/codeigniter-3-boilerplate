@@ -11,3 +11,5 @@ $route['api/v1/login'] = 'api/v1/Auth/login';
 $route['api/v1/register'] = 'api/v1/auth/register';
 $route['api/v1/categories'] = 'api/v1/categories';
 $route['api/v1/products'] = 'api/v1/products';
+$route['api/v1/categories/(:num)'] = 'api/v1/categories/index/$1';
+$route['api/v1/products/(:num)'] = 'api/v1/products/index/$1';

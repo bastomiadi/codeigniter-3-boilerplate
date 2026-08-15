@@ -36,7 +36,7 @@ class Auth extends CI_Controller {
                 );
                 $this->session->set_userdata($user_data);
 
-                $redirect_url = ($role_id == 1) ? 'backend/dashboard' : (($role_id == 2) ? 'backend/dashboard' : 'backend/category');
+                $redirect_url = ($user->role_id == 1 OR $user->role_id == 2) ? 'backend/dashboard' : 'backend/category';
                 redirect($redirect_url); // Redirect to appropriate dashboard after login
             } else {
                 // Display error (incorrect credentials)
@@ -58,8 +58,8 @@ class Auth extends CI_Controller {
             $email = $this->input->post('email');
             $password = $this->input->post('password');
 
-            // Assuming role_id for 'member' is 1 (adjust as per your roles table)
-            $role_id = 1; 
+            // role_id 2 = member
+            $role_id = 2;
 
             // Register user
             $this->auth_model->register($username, $email, $password, $role_id);

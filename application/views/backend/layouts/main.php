@@ -141,13 +141,24 @@
 
 <!-- Add more JS files as needed -->
 <script type="text/javascript">
-    // $(document).ready(function() {
-    //     // $.fn.select2.defaults.set("width", "100%");
-        
-    //     // $('.select2').select2({
-    //     //     width: '100%'
-    //     // });
-    // });
+    var csrfToken = '<?php echo $this->security->get_csrf_hash(); ?>';
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (settings.type.toUpperCase() !== 'POST') {
+                return;
+            }
+            var token = 'csrf_test_name=' + encodeURIComponent(csrfToken);
+            if (settings.data === undefined || settings.data === null || settings.data === '') {
+                settings.data = token;
+            } else if (typeof settings.data === 'string') {
+                settings.data += '&' + token;
+            } else if (settings.data instanceof FormData) {
+                settings.data.append('csrf_test_name', csrfToken);
+            } else {
+                settings.data.csrf_test_name = csrfToken;
+            }
+        }
+    });
 </script>
 </body>
 </html>

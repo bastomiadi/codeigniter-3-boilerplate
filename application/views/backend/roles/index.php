@@ -53,6 +53,10 @@
                         <label for="roleName">Role Name</label>
                         <input type="text" class="form-control" id="roleName" name="roleName" required>
                     </div>
+                    <div class="form-group">
+                        <label for="roleDescription">Description</label>
+                        <input type="text" class="form-control" id="roleDescription" name="roleDescription">
+                    </div>
                     <button type="submit" class="btn btn-primary">Add Role</button>
                 </form>
             </div>
@@ -77,6 +81,10 @@
                     <div class="form-group">
                         <label for="editroleName">Role Name</label>
                         <input type="text" class="form-control" id="editroleName" name="editroleName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editRoleDescription">Description</label>
+                        <input type="text" class="form-control" id="editRoleDescription" name="editRoleDescription">
                     </div>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </form>
@@ -136,8 +144,10 @@ $(document).ready(function() {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var RoleId = button.data('id'); // Extract Role ID from data-id attribute
         var roleName = button.data('name'); // Extract Role name from data-name attribute
+        var roleDescription = button.data('description');
         $('#editRoleId').val(RoleId);
         $('#editroleName').val(roleName);
+        $('#editRoleDescription').val(roleDescription);
     });
 
     // Delete Role Modal
@@ -151,11 +161,12 @@ $(document).ready(function() {
     $('#addRoleForm').submit(function(e) {
         e.preventDefault();
         var roleName = $('#roleName').val();
+        var roleDescription = $('#roleDescription').val();
 
         $.ajax({
             type: 'POST',
             url: '<?php echo base_url("backend/roles/add_role"); ?>',
-            data: { roleName: roleName },
+            data: { roleName: roleName, roleDescription: roleDescription },
             success: function(response) {
                 $('#addRoleModal').modal('hide');
                 $('#Role-table').DataTable().ajax.reload();
@@ -173,11 +184,12 @@ $(document).ready(function() {
         e.preventDefault();
         var RoleId = $('#editRoleId').val();
         var roleName = $('#editroleName').val();
+        var roleDescription = $('#editRoleDescription').val();
 
         $.ajax({
             type: 'POST',
             url: '<?php echo base_url("backend/roles/edit_role"); ?>',
-            data: { id: RoleId, roleName: roleName },
+            data: { id: RoleId, roleName: roleName, roleDescription: roleDescription },
             success: function(response) {
                 $('#editRoleModal').modal('hide');
                 $('#Role-table').DataTable().ajax.reload();

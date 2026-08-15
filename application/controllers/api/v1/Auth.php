@@ -7,27 +7,43 @@ class Auth extends RestController {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('User_model');
+        $this->load->model('auth_model');
+        $this->load->library('jwt_auth');
     }
 
     public function register_post() {
-        $data = [
-            'username' => $this->post('username'),
-            'password' => password_hash($this->post('password'), PASSWORD_BCRYPT),
-            'role' => 'member'
-        ];
-        $this->User_model->insert($data);
-        $this->response(['status' => 'User registered successfully'], RestController::HTTP_OK);
+        $user_id = $this->auth_model->register(
+            $this->post('username'),
+            $this->post('email'),
+            $this->post('password'),
+            2 // member
+        );
+
+        $token = $this->jwt_auth->encode($user_id);
+        $this->response(array(
+            'status' => 'User registered successfully',
+            'token' => $token,
+            'user_id' => (int) $user_id
+        ), RestController::HTTP_CREATED);
     }
 
     public function login_post() {
         $username = $this->post('username');
         $password = $this->post('password');
-        $user = $this->User_model->get_by_username($username);
-        if ($user && md5($password, $user->password)) {
-            $this->response(['status' => 'Login successful'], RestController::HTTP_OK);
+        $user = $this->auth_model->login($username, $password);
+        if ($user) {
+            $token = $this->jwt_auth->encode($user->id);
+            $this->response(array(
+                'status' => 'Login successful',
+                'token' => $token,
+                'user' => array(
+                    'id' => (int) $user->id,
+                    'username' => $user->username,
+                    'role' => $user->role_name
+                )
+            ), RestController::HTTP_OK);
         } else {
-            $this->response(['status' => 'Invalid username or password'], RestController::HTTP_UNAUTHORIZED);
+            $this->response(array('status' => 'Invalid username or password'), RestController::HTTP_UNAUTHORIZED);
         }
     }
 }

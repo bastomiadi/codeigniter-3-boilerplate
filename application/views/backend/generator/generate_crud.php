@@ -3,16 +3,21 @@
 <?php endif; ?>
 <?php echo form_open('backend/CrudGenerator/crud'); ?>
     <div class="form-group">
-        <label for="model_path">Model Path:</label>
-        <input type="text" class="form-control" id="model_path" name="model_path" value="<?php echo set_value('model_path', 'models/'); ?>" required>
+        <label for="model_path">Model:</label>
+        <select class="form-control" id="model_path" name="model_path" required>
+            <option value="">-- Select Model --</option>
+            <?php foreach ($models as $model): ?>
+                <option value="<?php echo $model; ?>" <?php echo set_select('model_path', $model); ?>><?php echo $model; ?></option>
+            <?php endforeach; ?>
+        </select>
     </div>
     <div class="form-group">
         <label for="controller_path">Controller Path:</label>
-        <input type="text" class="form-control" id="controller_path" name="controller_path" value="<?php echo set_value('controller_path', 'controllers/'); ?>" required>
+        <input type="text" class="form-control" id="controller_path" name="controller_path" value="<?php echo set_value('controller_path', 'controllers/backend/'); ?>" required>
     </div>
     <div class="form-group">
         <label for="view_path">View Path:</label>
-        <input type="text" class="form-control" id="view_path" name="view_path" value="<?php echo set_value('view_path', 'views/'); ?>" required>
+        <input type="text" class="form-control" id="view_path" name="view_path" value="<?php echo set_value('view_path', 'views/backend/'); ?>" required>
     </div>
     <button type="submit" class="btn btn-primary">Generate CRUD</button>
 <?php echo form_close(); ?>

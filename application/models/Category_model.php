@@ -11,18 +11,20 @@ class Category_model extends CI_Model {
         parent::__construct();
     }
 
-    public function add_category($name, $created_by) {
+    public function add_category($name, $description, $created_by) {
         $data = array(
             'name' => $name,
+            'description' => $description,
             'created_by' => $created_by,
             'created_at' => date('Y-m-d H:i:s')
         );
         $this->db->insert($this->table, $data);
     }
     
-    public function edit_category($id, $name, $updated_by) {
+    public function edit_category($id, $name, $description, $updated_by) {
         $data = array(
             'name' => $name,
+            'description' => $description,
             'updated_by' => $updated_by,
             'updated_at' => date('Y-m-d H:i:s')
         );
@@ -87,5 +89,23 @@ class Category_model extends CI_Model {
         $query = $this->db->get();
         return $query->result_array();
     }
-}
 
+    public function get_all() {
+        return $this->db->get($this->table)->result();
+    }
+
+    public function insert($data) {
+        $this->db->insert($this->table, $data);
+        return $this->db->insert_id();
+    }
+
+    public function update($where, $data) {
+        $this->db->update($this->table, $data, $where);
+        return $this->db->affected_rows();
+    }
+
+    public function delete_by_id($id) {
+        $this->db->where('id', $id);
+        $this->db->delete($this->table);
+    }
+}

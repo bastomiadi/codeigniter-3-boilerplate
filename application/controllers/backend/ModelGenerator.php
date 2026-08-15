@@ -10,33 +10,26 @@ class ModelGenerator extends CI_Controller {
         $this->load->database(); // Load database library
     }
 
-    // private function fetchTables() {
-    //     $query = $this->db->query("SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()");
-    //     $tables = array();
-    //     foreach ($query->result() as $row) {
-    //         if (isset($row->table_name)) {
-    //             $tables[] = $row->table_name;
-    //         } else {
-    //             // Log or display error message for debugging
-    //             log_message('error', 'table_name property not found in fetchTables()');
-    //         }
-    //     }        
-    //     return $tables;
-    // }
+    private function fetchTables() {
+        return array_values(array_diff($this->db->list_tables(), array('migrations')));
+    }
     
 
     public function model() {
         $this->load->library('form_validation');
 
         // Form validation rules
-        $this->form_validation->set_rules('table', 'Table Name', 'required');
-        $this->form_validation->set_rules('model_name', 'Model Name', 'required');
-        $this->form_validation->set_rules('model_path', 'Model Path', 'required');
+        $this->form_validation->set_rules('table', 'Table Name', 'required|regex_match[/^[a-zA-Z0-9_]+$/]');
+        $this->form_validation->set_rules('model_name', 'Model Name', 'trim|regex_match[/^[a-zA-Z0-9_]+$/]');
+        $this->form_validation->set_rules('model_path', 'Model Path', 'required|regex_match[/^[a-zA-Z0-9_\/]+$/]');
 
         if ($this->form_validation->run() === TRUE && $this->input->server('REQUEST_METHOD') == 'POST') {
 
             $table = $this->input->post('table');
             $modelName = $this->input->post('model_name');
+            if (empty($modelName)) {
+                $modelName = $table;
+            }
             $modelPath = $this->input->post('model_path');
             // $namespace = $this->input->post('namespace');
 
@@ -48,11 +41,11 @@ class ModelGenerator extends CI_Controller {
             // Get field data
             $fields_data = $this->db->field_data($table);
 
-            foreach ($fields_data as $key => $value) {
-                if($value->primary_key == 1){
+            foreach ($fields_data as $value) {
+                if ($value->primary_key == 1) {
                     $primary_key_fields = $value->name;
+                    break;
                 }
-                break;
             }
 
             // Create the model content
@@ -109,7 +102,8 @@ class ModelGenerator extends CI_Controller {
         //$this->load->view('generate_model', $data);
         $data['title'] = 'Model Generator';
         $data['page_title'] = 'Model Generator';
-        $data['contents'] = $this->load->view('backend/generator/generate_model', '', TRUE);
+        $data['tables'] = $this->fetchTables();
+        $data['contents'] = $this->load->view('backend/generator/generate_model', $data, TRUE);
         $this->load->view('backend/layouts/main', $data);
         return $this; 
     }
@@ -163,13 +157,12 @@ class ModelGenerator extends CI_Controller {
         $methodContent .= "        \$data = array(\n";
         
         foreach ($fields_data as $key => $value) {
-            if($value->name = 'deleted_at'){
+            if ($value->name == 'deleted_at') {
                 $methodContent .= "            'deleted_at' => date('Y-m-d H:i:s'),\n";
             }
-            if($value->name = 'deleted_at'){
+            if ($value->name == 'deleted_by') {
                 $methodContent .= "            'deleted_by' => \$deleted_by\n";
             }
-            break;
         }
         $methodContent .= "        );\n";
         $methodContent .= "        \$this->db->where('{$primary_key_fields}', \${$primary_key_fields})->update(\$this->table, \$data);\n";
@@ -229,10 +222,9 @@ class ModelGenerator extends CI_Controller {
         $methodContent .= "        \$this->db->from(\$this->table);\n";
 
         foreach ($fields_data as $key => $value) {
-            if($value->name = 'deleted_at'){
+            if ($value->name == 'deleted_at') {
                 $methodContent .= "        \$this->db->where('deleted_at', NULL); // Exclude soft deleted records\n";
             }
-            break;
         }
 
         $methodContent .= "        return \$this->db->count_all_results();\n";
@@ -245,10 +237,9 @@ class ModelGenerator extends CI_Controller {
         $methodContent .= "        \$this->db->select('id, {$fields[1]} as text');\n";
         $methodContent .= "        \$this->db->from(\$this->table);\n";
         foreach ($fields_data as $key => $value) {
-            if($value->name = 'deleted_at'){
+            if ($value->name == 'deleted_at') {
                 $methodContent .= "        \$this->db->where('deleted_at', NULL); // Exclude soft deleted records\n";
             }
-            break;
         }
         $methodContent .= "        if (\$searchTerm != \"\") {\n";
         //$methodContent .= "            \$this->db->like('name', \$searchTerm);\n";

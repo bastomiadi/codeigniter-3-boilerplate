@@ -19,4 +19,15 @@ class Profile_model extends CI_Model {
     public function create_profile($data) {
         return $this->db->insert('profile', $data);
     }
+
+    public function save_profile($user_id, $data) {
+        if ($this->db->get_where('profile', array('user_id' => $user_id))->num_rows() > 0) {
+            $this->db->where('user_id', $user_id);
+            return $this->db->update('profile', $data);
+        }
+
+        $data['user_id'] = $user_id;
+        $data['created_at'] = date('Y-m-d H:i:s');
+        return $this->db->insert('profile', $data);
+    }
 }

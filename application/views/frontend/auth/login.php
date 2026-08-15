@@ -8,7 +8,8 @@
         <div class="card-body login-card-body">
             <p class="login-box-msg">Sign in to start your session</p>
 
-            <form action="<?php echo base_url('auth/login'); ?>" method="post">
+            <form action="<?php echo base_url('frontend/auth/login'); ?>" method="post">
+                <?php echo form_hidden($this->security->get_csrf_token_name(), $this->security->get_csrf_hash()); ?>
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Username" name="username" required>
                     <div class="input-group-append">

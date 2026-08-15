@@ -50,8 +50,12 @@
                 <!-- Form to add User -->
                 <form id="addUserForm">
                     <div class="form-group">
-                        <label for="UserName">User Name</label>
-                        <input type="text" class="form-control" id="UserName" name="UserName" required>
+                        <label for="username">User Name</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Add User</button>
                 </form>
@@ -75,8 +79,12 @@
                 <form id="editUserForm">
                     <input type="hidden" id="editUserId" name="editUserId">
                     <div class="form-group">
-                        <label for="editUserName">User Name</label>
-                        <input type="text" class="form-control" id="editUserName" name="editUserName" required>
+                        <label for="editUsername">User Name</label>
+                        <input type="text" class="form-control" id="editUsername" name="editUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email</label>
+                        <input type="email" class="form-control" id="editEmail" name="editEmail" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </form>
@@ -135,9 +143,11 @@ $(document).ready(function() {
     $('#editUserModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var UserId = button.data('id'); // Extract User ID from data-id attribute
-        var UserName = button.data('name'); // Extract User name from data-name attribute
+        var Username = button.data('username');
+        var Email = button.data('email');
         $('#editUserId').val(UserId);
-        $('#editUserName').val(UserName);
+        $('#editUsername').val(Username);
+        $('#editEmail').val(Email);
     });
 
     // Delete User Modal
@@ -150,12 +160,13 @@ $(document).ready(function() {
     // Add User Form Submission via AJAX
     $('#addUserForm').submit(function(e) {
         e.preventDefault();
-        var UserName = $('#userName').val();
+        var Username = $('#username').val();
+        var Email = $('#email').val();
 
         $.ajax({
             type: 'POST',
             url: '<?php echo base_url("backend/users/add_user"); ?>',
-            data: { UserName: UserName },
+            data: { username: Username, email: Email },
             success: function(response) {
                 $('#addUserModal').modal('hide');
                 $('#user-table').DataTable().ajax.reload();
@@ -172,12 +183,13 @@ $(document).ready(function() {
     $('#editUserForm').submit(function(e) {
         e.preventDefault();
         var UserId = $('#editUserId').val();
-        var UserName = $('#editUserName').val();
+        var Username = $('#editUsername').val();
+        var Email = $('#editEmail').val();
 
         $.ajax({
             type: 'POST',
             url: '<?php echo base_url("backend/users/edit_user"); ?>',
-            data: { id: UserId, UserName: UserName },
+            data: { id: UserId, username: Username, email: Email },
             success: function(response) {
                 $('#editUserModal').modal('hide');
                 $('#user-table').DataTable().ajax.reload();

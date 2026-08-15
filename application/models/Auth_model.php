@@ -13,21 +13,21 @@ class Auth_model extends CI_Model {
         $this->db->join('user_roles', 'users.id = user_roles.user_id');
         $this->db->join('roles', 'user_roles.role_id = roles.role_id');
         $this->db->where('users.username', $username);
-        $this->db->where('users.password', md5($password)); // Example: Use secure password hashing
         $query = $this->db->get();
 
         if ($query->num_rows() == 1) {
-            return $query->row(); // Return user object with roles
-        } else {
-            return false; // User not found or multiple users found (should not happen with user_id as primary key)
+            $user = $query->row();
+            return password_verify($password, $user->password) ? $user : false;
         }
+
+        return false;
     }
 
     public function register($username, $email, $password, $role_id) {
         $data = array(
             'username' => $username,
             'email' => $email,
-            'password' => md5($password), // Example: Use secure password hashing
+            'password' => password_hash($password, PASSWORD_DEFAULT),
         );
         $this->db->insert('users', $data);
 
@@ -41,5 +41,7 @@ class Auth_model extends CI_Model {
             'created_at' => date('Y-m-d H:i:s'), // Example: Use current timestamp or your preferred method
         );
         $this->db->insert('user_roles', $user_roles_data);
+
+        return $user_id;
     }
 }

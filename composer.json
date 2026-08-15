@@ -14,13 +14,14 @@
 		"php": ">=5.3.7",
 		"fakerphp/faker": "^1.23",
 		"chriskacerguis/codeigniter-restserver": "^3.1",
-		"firebase/php-jwt": "^6.10",
+		"firebase/php-jwt": "^7.0",
 		"paragonie/sodium_compat": "^2.0"
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
 	},
 	"scripts": {
+		"test": "phpunit --configuration tests/phpunit.xml",
 		"test:coverage": [
 			"@putenv XDEBUG_MODE=coverage",
 			"phpunit --color=always --coverage-text --configuration tests/travis/sqlite.phpunit.xml"
@@ -29,7 +30,7 @@
 			"sed -i s/name{0}/name[0]/ vendor/mikey179/vfsstream/src/main/php/org/bovigo/vfs/vfsStream.php"
 		],
 		"post-update-cmd": [
-			"sed -i s/name{0}/name[0]/ vendor/mikey179/vfsstream/src/main/php/org/bovigo/vfs/vfsStream.php"
+			"sed -i '' 's/name{0}/name[0]/' vendor/mikey179/vfsstream/src/main/php/org/bovigo/vfs/vfsStream.php"
 		]
 	},
 	"require-dev": {

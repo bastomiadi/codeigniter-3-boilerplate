@@ -24,10 +24,6 @@ class Product extends CI_Controller {
         echo json_encode($products);
     }
 
-    public function create() {
-        $this->load->view('backend/product/create');
-    }
-
     public function store() {
         $data = array(
             'name' => $this->input->post('name'),

@@ -4,33 +4,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Menu_model extends CI_Model {
 
     public function get_all_menus() {
-        // $this->db->order_by('parent_id', 'asc');
-        // $this->db->order_by('menu_name', 'asc');
-        // $query = $this->db->get('menus');
-
-        // echo '<pre>';
-        // print_r($query->result());
-        // echo '</pre>';
-        // die;
-
-        // return $query->result();
-
         $user_id = $this->session->userdata('user_id');
 
-        
-        if (!$user_id) {
-            return false; // No user logged in, return empty array or handle appropriately
+        if ( ! $user_id) {
+            return array();
         }
 
-        // Query to fetch menus based on user permissions
+        // Collect permission ids owned by the user's roles
+        $this->db->select('roles_permissions.permission_id');
+        $this->db->from('roles_permissions');
+        $this->db->join('user_roles', 'user_roles.role_id = roles_permissions.role_id');
+        $this->db->where('user_roles.user_id', $user_id);
+        $permission_ids = array_column($this->db->get()->result_array(), 'permission_id');
+
+        // Menus: those matching the user's permissions, plus menus without any permission
         $this->db->select('menus.*');
         $this->db->from('menus');
-        $this->db->join('permissions', 'menus.permission_id = permissions.permission_id', 'left');
-        $this->db->join('roles_permissions', 'permissions.permission_id = roles_permissions.permission_id', 'left');
-        $this->db->join('roles', 'roles_permissions.role_id = roles.role_id', 'left');
-        $this->db->join('user_roles', 'roles.role_id = user_roles.role_id', 'left');
-        $this->db->where('user_roles.user_id', $user_id);
-        $this->db->or_where('menus.permission_id IS NULL'); // Include menus with no specific permission
+        $this->db->group_start();
+        if ( ! empty($permission_ids)) {
+            $this->db->where_in('menus.permission_id', $permission_ids);
+            $this->db->or_where('menus.permission_id', 0);
+        } else {
+            $this->db->where('menus.permission_id', 0);
+        }
+        $this->db->group_end();
 
         $this->db->order_by('menus.parent_id', 'asc');
         $this->db->order_by('menus.menu_name', 'asc');
@@ -38,17 +35,11 @@ class Menu_model extends CI_Model {
         $query = $this->db->get();
 
         if ($query->num_rows() > 0) {
-            return $query->result(); // Return array of menu items
-        } else {
-            return array(); // Return an empty array if no menus found
+            return $query->result();
         }
-    }
 
-    // public function get_all() {
-    //     $this->db->order_by('parent_id', 'asc');
-    //     $this->db->order_by('menu_name', 'asc');
-    //     return $this->db->get('menus')->result();
-    // }
+        return array();
+    }
 
     public function get_menu_tree($parent_id = 0, $level = 0) {
         $this->db->select('menu_id, menu_name, parent_id');

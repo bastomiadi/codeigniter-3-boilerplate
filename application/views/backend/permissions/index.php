@@ -53,6 +53,10 @@
                         <label for="permissionName">Permission Name</label>
                         <input type="text" class="form-control" id="permissionName" name="permissionName" required>
                     </div>
+                    <div class="form-group">
+                        <label for="permissionDescription">Description</label>
+                        <input type="text" class="form-control" id="permissionDescription" name="permissionDescription">
+                    </div>
                     <button type="submit" class="btn btn-primary">Add Permission</button>
                 </form>
             </div>
@@ -77,6 +81,10 @@
                     <div class="form-group">
                         <label for="editpermissionName">Permission Name</label>
                         <input type="text" class="form-control" id="editpermissionName" name="editpermissionName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPermissionDescription">Description</label>
+                        <input type="text" class="form-control" id="editPermissionDescription" name="editPermissionDescription">
                     </div>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </form>
@@ -147,8 +155,10 @@ $(document).ready(function() {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var PermissionId = button.data('id'); // Extract Permission ID from data-id attribute
         var permissionName = button.data('name'); // Extract Permission name from data-name attribute
+        var permissionDescription = button.data('description');
         $('#editPermissionId').val(PermissionId);
         $('#editpermissionName').val(permissionName);
+        $('#editPermissionDescription').val(permissionDescription);
     });
 
     // Delete Permission Modal
@@ -162,12 +172,12 @@ $(document).ready(function() {
     $('#addPermissionForm').submit(function(e) {
         e.preventDefault();
         var permissionName = $('#permissionName').val();
-        console.log(permissionName);
+        var permissionDescription = $('#permissionDescription').val();
 
         $.ajax({
             type: 'POST',
             url: '<?php echo base_url("backend/permissions/add_permission"); ?>',
-            data: { permissionName: permissionName },
+            data: { permissionName: permissionName, permissionDescription: permissionDescription },
             success: function(response) {
                 $('#addPermissionModal').modal('hide');
                 $('#permission-table').DataTable().ajax.reload();
@@ -185,11 +195,12 @@ $(document).ready(function() {
         e.preventDefault();
         var PermissionId = $('#editPermissionId').val();
         var permissionName = $('#editpermissionName').val();
+        var permissionDescription = $('#editPermissionDescription').val();
 
         $.ajax({
             type: 'POST',
             url: '<?php echo base_url("backend/permissions/edit_permission"); ?>',
-            data: { id: PermissionId, permissionName: permissionName },
+            data: { id: PermissionId, permissionName: permissionName, permissionDescription: permissionDescription },
             success: function(response) {
                 $('#editPermissionModal').modal('hide');
                 $('#permission-table').DataTable().ajax.reload();

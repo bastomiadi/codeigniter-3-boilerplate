@@ -41,36 +41,51 @@ class Users extends CI_Controller {
     }
 
     public function add_user() {
-        $categoryusername = $this->input->post('categoryusername');
-        $categoryemail = $this->input->post('categoryemail');
+        $this->form_validation->set_rules('username', 'Username', 'required|trim|min_length[3]');
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode(['status' => 'error', 'message' => validation_errors(' ', ' ')]);
+            return;
+        }
+
+        $username = $this->input->post('username');
+        $email = $this->input->post('email');
         $createdBy = $this->session->userdata('user_id'); // Assuming you store user_id in session
 
-        // Add category logic
-        $this->User_model->add_user($categoryusername, $categoryemail, $createdBy);
+        // Add user logic
+        $this->User_model->add_user($username, $email, $createdBy);
         echo json_encode(['status' => 'success']);
     }
 
     public function edit_user() {
-        $categoryId = $this->input->post('id');
-        $categoryusername = $this->input->post('categoryusername');
-        $categoryemail = $this->input->post('categoryemail');
+        $this->form_validation->set_rules('id', 'ID', 'required|integer');
+        $this->form_validation->set_rules('username', 'Username', 'required|trim|min_length[3]');
+        $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode(['status' => 'error', 'message' => validation_errors(' ', ' ')]);
+            return;
+        }
+
+        $userId = $this->input->post('id');
+        $username = $this->input->post('username');
+        $email = $this->input->post('email');
         $updatedBy = $this->session->userdata('user_id'); // Assuming you store user_id in session
 
-        // Edit category logic
-        $this->User_model->edit_user($categoryId, $categoryusername, $categoryemail, $updatedBy);
+        // Edit user logic
+        $this->User_model->edit_user($userId, $username, $email, $updatedBy);
         echo json_encode(['status' => 'success']);
     }
 
     public function delete_user() {
-        $categoryId = $this->input->post('id');
+        $userId = $this->input->post('id');
         $deletedBy = $this->session->userdata('user_id'); // Assuming you store user_id in session
 
-        // Soft delete category logic
-        $this->User_model->soft_delete_user($categoryId, $deletedBy);
+        // Soft delete user logic
+        $this->User_model->soft_delete_user($userId, $deletedBy);
         echo json_encode(['status' => 'success']);
     }
 
-    // dropdown get category for select2
+    // dropdown get user for select2
     public function select2() {
         $searchTerm = $this->input->get('q');
         $categories = $this->User_model->get_select2($searchTerm);

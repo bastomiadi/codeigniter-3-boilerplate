@@ -41,6 +41,12 @@ class Roles extends CI_Controller {
     }
 
     public function add_role() {
+        $this->form_validation->set_rules('roleName', 'Role Name', 'required|trim');
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode(['status' => 'error', 'message' => validation_errors(' ', ' ')]);
+            return;
+        }
+
         $roleName = $this->input->post('roleName');
         $roleDescription = $this->input->post('roleDescription');
         $createdBy = $this->session->userdata('user_id'); // Assuming you store user_id in session
@@ -51,6 +57,13 @@ class Roles extends CI_Controller {
     }
 
     public function edit_role() {
+        $this->form_validation->set_rules('id', 'ID', 'required|integer');
+        $this->form_validation->set_rules('roleName', 'Role Name', 'required|trim');
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode(['status' => 'error', 'message' => validation_errors(' ', ' ')]);
+            return;
+        }
+
         $categoryId = $this->input->post('id');
         $roleName = $this->input->post('roleName');
         $roleDescription = $this->input->post('roleDescription');

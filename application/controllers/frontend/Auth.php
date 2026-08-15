@@ -11,7 +11,7 @@ class Auth extends CI_Controller {
     public function login() {
         // Check if user is already logged in
         if ($this->session->userdata('logged_in')) {
-            redirect('dashboard'); // Redirect to dashboard or home page
+            redirect('frontend/home'); // Redirect to dashboard or home page
         }
 
         // Handle login form submission
@@ -31,7 +31,7 @@ class Auth extends CI_Controller {
                 );
                 $this->session->set_userdata($user_data);
 
-                redirect('dashboard'); // Redirect to dashboard or home page after login
+                redirect('frontend/home'); // Redirect to dashboard or home page after login
             } else {
                 // Display error (incorrect credentials)
                 $data['error'] = 'Invalid username or password';
@@ -49,14 +49,14 @@ class Auth extends CI_Controller {
             $email = $this->input->post('email');
             $password = $this->input->post('password');
 
-            // Assuming role_id for 'member' is 1 (adjust as per your roles table)
-            $role_id = 1; 
+            // role_id 2 = member
+            $role_id = 2;
 
             // Register user
             $this->auth_model->register($username, $email, $password, $role_id);
 
             // Optionally, redirect to login page or handle success
-            redirect('auth/login'); // Redirect to login page after successful registration
+            redirect('frontend/auth/login'); // Redirect to login page after successful registration
         }
 
         // Load register view
@@ -66,6 +66,6 @@ class Auth extends CI_Controller {
     public function logout() {
         // Destroy session and redirect to login page
         $this->session->sess_destroy();
-        redirect('auth/login');
+        redirect('frontend/auth/login');
     }
 }

@@ -9,29 +9,20 @@ class User_model extends CI_Model {
         parent::__construct();
     }
 
-    // public function register($data) {
-    //     return $this->db->insert('users', $data);
-    // }
-
-    // public function login($userusername, $password) {
-    //     $this->db->where('userusername', $userusername);
-    //     $this->db->where('password', md5($password));
-    //     $query = $this->db->get('users');
-    //     return $query->row();
-    // }
-
-    public function add_user($username, $created_by) {
+    public function add_user($username, $email, $created_by) {
         $data = array(
             'username' => $username,
+            'email' => $email,
             'created_by' => $created_by,
             'created_at' => date('Y-m-d H:i:s')
         );
         $this->db->insert($this->table, $data);
     }
     
-    public function edit_user($id, $username, $updated_by) {
+    public function edit_user($id, $username, $email, $updated_by) {
         $data = array(
             'username' => $username,
+            'email' => $email,
             'updated_by' => $updated_by,
             'updated_at' => date('Y-m-d H:i:s')
         );
@@ -99,5 +90,17 @@ class User_model extends CI_Model {
 
     public function get_user($user_id) {
         return $this->db->get_where('users', array('id' => $user_id))->row();
+    }
+
+    public function change_password($user_id, $current_password, $new_password) {
+        $user = $this->db->get_where('users', array('id' => $user_id))->row();
+        if ( ! $user || ! password_verify($current_password, $user->password)) {
+            return 'wrong_password';
+        }
+
+        $this->db->where('id', $user_id)->update('users', array(
+            'password' => password_hash($new_password, PASSWORD_DEFAULT)
+        ));
+        return 'ok';
     }
 }

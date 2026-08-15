@@ -41,6 +41,12 @@ class Permissions extends CI_Controller {
     }
 
     public function add_permission() {
+        $this->form_validation->set_rules('permissionName', 'Permission Name', 'required|trim');
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode(['status' => 'error', 'message' => validation_errors(' ', ' ')]);
+            return;
+        }
+
         $permissionName = $this->input->post('permissionName');
         $permissionDescription = $this->input->post('permissionDescription');
         $createdBy = $this->session->userdata('user_id'); // Assuming you store user_id in session
@@ -51,6 +57,13 @@ class Permissions extends CI_Controller {
     }
 
     public function edit_permission() {
+        $this->form_validation->set_rules('id', 'ID', 'required|integer');
+        $this->form_validation->set_rules('permissionName', 'Permission Name', 'required|trim');
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode(['status' => 'error', 'message' => validation_errors(' ', ' ')]);
+            return;
+        }
+
         $permissionId = $this->input->post('id');
         $permissionName = $this->input->post('permissionName');
         $permissionDescription = $this->input->post('permissionDescription');

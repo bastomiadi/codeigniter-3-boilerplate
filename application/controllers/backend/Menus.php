@@ -36,6 +36,7 @@ class Menus extends CI_Controller {
         $parent_id = $this->input->post('parent_id');
         $data = array(
             'menu_name' => $this->input->post('menu_name'),
+            'description' => $this->input->post('description'),
             'menu_url' => $this->input->post('menu_url'),
             'menu_icon' => $this->input->post('menu_icon'),
             'parent_id' => empty($parent_id) ? NULL : $parent_id

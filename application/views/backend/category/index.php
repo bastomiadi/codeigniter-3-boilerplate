@@ -52,6 +52,10 @@
                         <label for="categoryName">Category Name</label>
                         <input type="text" class="form-control" id="categoryName" name="categoryName" required>
                     </div>
+                    <div class="form-group">
+                        <label for="categoryDescription">Description</label>
+                        <textarea class="form-control" id="categoryDescription" name="categoryDescription"></textarea>
+                    </div>
                     <button type="submit" class="btn btn-primary">Add Category</button>
                 </form>
             </div>
@@ -76,6 +80,10 @@
                     <div class="form-group">
                         <label for="editCategoryName">Category Name</label>
                         <input type="text" class="form-control" id="editCategoryName" name="editCategoryName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCategoryDescription">Description</label>
+                        <textarea class="form-control" id="editCategoryDescription" name="editCategoryDescription"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </form>
@@ -167,8 +175,10 @@ $(document).ready(function() {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var categoryId = button.data('id'); // Extract category ID from data-id attribute
         var categoryName = button.data('name'); // Extract category name from data-name attribute
+        var categoryDescription = button.data('description');
         $('#editCategoryId').val(categoryId);
         $('#editCategoryName').val(categoryName);
+        $('#editCategoryDescription').val(categoryDescription);
     });
 
     // Delete Category Modal
@@ -182,11 +192,12 @@ $(document).ready(function() {
     $('#addCategoryForm').submit(function(e) {
         e.preventDefault();
         var categoryName = $('#categoryName').val();
+        var categoryDescription = $('#categoryDescription').val();
 
         $.ajax({
             type: 'POST',
             url: '<?php echo base_url("backend/category/add_category"); ?>',
-            data: { categoryName: categoryName },
+            data: { categoryName: categoryName, categoryDescription: categoryDescription },
             success: function(response) {
                 $('#addCategoryModal').modal('hide');
                 $('#category-table').DataTable().ajax.reload();
@@ -204,11 +215,12 @@ $(document).ready(function() {
         e.preventDefault();
         var categoryId = $('#editCategoryId').val();
         var categoryName = $('#editCategoryName').val();
+        var categoryDescription = $('#editCategoryDescription').val();
 
         $.ajax({
             type: 'POST',
             url: '<?php echo base_url("backend/category/edit_category"); ?>',
-            data: { id: categoryId, categoryName: categoryName },
+            data: { id: categoryId, categoryName: categoryName, categoryDescription: categoryDescription },
             success: function(response) {
                 $('#editCategoryModal').modal('hide');
                 $('#category-table').DataTable().ajax.reload();

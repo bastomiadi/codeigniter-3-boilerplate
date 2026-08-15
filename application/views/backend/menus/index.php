@@ -65,6 +65,10 @@ function generate_menu_options($menus, $level = 0) {
                     <input type="text" name="menu_name" class="form-control" required>
                 </div>
                 <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" name="description" class="form-control">
+                </div>
+                <div class="form-group">
                     <label for="menu_url">Menu URL</label>
                     <input type="text" name="menu_url" class="form-control" required>
                 </div>
@@ -149,6 +153,7 @@ function generate_menu_options($menus, $level = 0) {
         var data = table.row($(element).parents('tr')).data();
         $('[name="menu_id"]').val(data.menu_id);
         $('[name="menu_name"]').val(data.menu_name);
+        $('[name="description"]').val(data.description);
         $('[name="menu_url"]').val(data.menu_url);
         $('[name="menu_icon"]').val(data.menu_icon);
         $('[name="parent_id"]').val(data.parent_id).trigger('change');

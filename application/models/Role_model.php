@@ -9,18 +9,20 @@ class Role_model extends CI_Model {
         parent::__construct();
     }
 
-    public function add_role($role_name, $created_by) {
+    public function add_role($role_name, $description, $created_by) {
         $data = array(
             'role_name' => $role_name,
+            'description' => $description,
             'created_by' => $created_by,
             'created_at' => date('Y-m-d H:i:s')
         );
         $this->db->insert($this->table, $data);
     }
     
-    public function edit_role($role_id, $role_name, $updated_by) {
+    public function edit_role($role_id, $role_name, $description, $updated_by) {
         $data = array(
             'role_name' => $role_name,
+            'description' => $description,
             'updated_by' => $updated_by,
             'updated_at' => date('Y-m-d H:i:s')
         );

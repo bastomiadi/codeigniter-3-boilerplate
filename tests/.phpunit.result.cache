@@ -1,0 +1,1 @@
+{"version":1,"defects":{"AppSmokeTest::testConfigLoadsWithSecurityEnabled":4},"times":{"AppSmokeTest::testConfigLoadsWithSecurityEnabled":0.004,"AppSmokeTest::testMigrationsAreSequentiallyNumbered":0.001,"AppSmokeTest::testApplicationPhpFilesParse":0.006}}

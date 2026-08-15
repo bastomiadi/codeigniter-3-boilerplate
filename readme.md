@@ -61,18 +61,18 @@ $db['default'] = array(
 	'save_queries' => TRUE
 );
 ```
-**5.** Run migrate 
+**5.** Run migrate (CLI only for security)
 ```bash
-http://localhost/ci3-boilerplate/migrate
+php index.php migrate
+# atau: php index.php migrate run
 ```
 
-**6.** Run Seeder 
-
+**6.** Run Seeder (CLI only)
 ```bash
-http://localhost/ci3-boilerplate/seed
+php index.php seed
 ```
 
-**7.** Open in browser http://localhost/ci3-boilerplate/backend/auth/login
+**7.** Open in browser http://ci3.test/backend/auth/login
 ```bash
 Default user and password
 +----+-------------+-------------+
@@ -89,6 +89,16 @@ You can find how it works with the read code, controller and views etc. Finnally
 ..
 
 Restful Api and Docs Work in progress.. : ...
+
+Useful CLI Commands
+-------------------
+```bash
+php index.php migrate                  # run all pending migrations
+php index.php migrate run              # alias of the above
+php index.php migrate rollback [N]     # rollback N migrations (default 1)
+php index.php migrate create <table>   # scaffold a new migration file
+php index.php seed                     # run seeders (idempotent)
+```
 
 
 Changelog

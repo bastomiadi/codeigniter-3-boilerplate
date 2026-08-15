@@ -11,18 +11,20 @@ class Permissions_model extends CI_Model {
         parent::__construct();
     }
 
-    public function add_permission($permission_name, $created_by) {
+    public function add_permission($permission_name, $description, $created_by) {
         $data = array(
             'permission_name' => $permission_name,
+            'description' => $description,
             'created_by' => $created_by,
             'created_at' => date('Y-m-d H:i:s')
         );
         $this->db->insert($this->table, $data);
     }
     
-    public function edit_permission($permission_id, $permission_name, $updated_by) {
+    public function edit_permission($permission_id, $permission_name, $description, $updated_by) {
         $data = array(
             'permission_name' => $permission_name,
+            'description' => $description,
             'updated_by' => $updated_by,
             'updated_at' => date('Y-m-d H:i:s')
         );
